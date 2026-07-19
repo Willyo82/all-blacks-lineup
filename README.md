@@ -17,4 +17,16 @@ Open `index.html` in a browser. The match selector works without a server, and k
 
 ## Weekly updates
 
-Update the fixture and lineup data inside `index.html`, then upload the changed `index.html` and any new files in `assets/players`. Keep player image filenames identical to their lowercase, hyphenated PlayerID.
+All editable match data is in `data/matches.js`. Do not edit the player comparisons or filter totals in `index.html`.
+
+When a team is released:
+
+1. Find the upcoming fixture in `data/matches.js`.
+2. Change its `status` from `"upcoming"` to `"released"`.
+3. Add `sourceUrl`, `unavailable`, and exactly 23 `lineup` records.
+4. Each lineup record needs the jersey number (`n`), matching player ID (`id`), display name (`name`), and caps at selection (`caps`). Add `captain: true` or `debut: true` when applicable.
+5. Add a new portrait to `assets/players` only when the player does not already have one. The PNG filename must exactly match the player ID.
+
+The website automatically finds the previous released match and calculates retained starters, promotions from the bench, positional moves, new selections, players dropped to the bench, players dropped out of the 23, injury markers, filter counts, and the forwards/backs bench split.
+
+After the match, change `status` to `"completed"` and add the result as `score: { allBlacks: 00, opponent: 00 }`.

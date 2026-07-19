@@ -256,6 +256,28 @@
     .match-row strong { font-size: 14px; }
     .match-row.current strong { color: var(--lime); }
 
+    .availability-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px 16px;
+      flex-wrap: wrap;
+      margin: -4px 0 20px;
+      padding: 12px 15px;
+      border: 1px solid rgba(255,76,70,.32);
+      border-radius: 13px;
+      background: rgba(145,28,25,.14);
+      color: #f3c7c5;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .availability-strip strong {
+      color: #ff716b;
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
     .summary {
       display: flex;
       gap: 10px;
@@ -600,6 +622,16 @@
       font-size: 12px;
       line-height: 1.16;
     }
+
+    .selection-meta {
+      display: block;
+      margin-top: 3px;
+      color: #8e9991;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
     .status {
       display: block;
       margin-top: 4px;
@@ -903,6 +935,11 @@
       </div>
     </header>
 
+    <div class="availability-strip" id="availability-strip" hidden>
+      <strong>Unavailable due to injury</strong>
+      <span id="availability-players"></span>
+    </div>
+
     <section class="unreleased-panel" id="unreleased-panel" aria-live="polite" hidden>
       <div class="unreleased-card">
         <div class="unreleased-icon" aria-hidden="true">?</div>
@@ -981,12 +1018,12 @@
     </div>
 
     <footer>
-      <span>Portraits are official All Blacks profile images served with this site. Status is calculated from the selected matchday teams.</span>
-      <span>Sources: <a href="https://www.allblacks.com/news/all-blacks/all-blacks-team-named-to-play-ireland-in-auckland">official Ireland team announcement and injury list</a> · <a href="https://www.allblacks.com/team/all-blacks/fixtures">official fixtures</a> · <a href="https://www.allblacks.com/team/all-blacks/squad">current squad</a></span>
+      <span id="footer-status-copy">Portraits are official All Blacks profile images served with this site. Status is calculated from the selected matchday teams.</span>
+      <span id="footer-source-links">Sources: <a href="https://www.allblacks.com/news/all-blacks/all-blacks-team-named-to-play-ireland-in-auckland">official Ireland team announcement and injury list</a> · <a href="https://www.allblacks.com/team/all-blacks/fixtures">official fixtures</a> · <a href="https://www.allblacks.com/team/all-blacks/squad">current squad</a></span>
     </footer>
   </main>
 
-  <script>
+  <script type="text/plain" id="legacy-lineup-script">
     const photoRoot = "assets/players/";
     const fixtures = [
       {id:"2026-07-18-IRE",competition:"2026 Nations Championship - Home",kickoff:"2026-07-18T07:10:00Z",team1:"All Blacks",team2:"Ireland",venue:"Eden Park, Auckland",released:true,previousOpponent:"Italy",previousDate:"11 Jul 2026",previousVenue:"Wellington"},
@@ -1253,5 +1290,7 @@
     const initialFixture = fixtures.find(fixture => fixture.id === requestedMatch) || fixtures.find(fixture => fixture.released) || fixtures[0];
     applyFixture(initialFixture, Boolean(requestedMatch));
   </script>
+  <script src="data/matches.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
