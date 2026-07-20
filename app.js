@@ -29,6 +29,7 @@
   const availabilityPlayers = document.getElementById("availability-players");
   const field = document.getElementById("field");
   const benchContainer = document.getElementById("bench");
+  const startingJump = document.getElementById("starting-jump");
   const benchJump = document.getElementById("bench-jump");
   const flashTimers = new WeakMap();
   const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "your device timezone";
@@ -361,6 +362,7 @@
     matchSelect.value = match.id;
     releasedLineup.hidden = !hasLineup;
     unreleasedPanel.hidden = hasLineup;
+    startingJump.hidden = !hasLineup;
     benchJump.hidden = !hasLineup;
     availabilityStrip.hidden = !hasLineup || !(match.unavailable || []).length;
 
@@ -410,6 +412,14 @@
   }
 
   populateFixtureSelector();
+  startingJump.addEventListener("click", () => {
+    startingJump.classList.remove("is-jumping");
+    void startingJump.offsetWidth;
+    startingJump.classList.add("is-jumping");
+    const fieldBottom = field.getBoundingClientRect().bottom + window.scrollY;
+    window.scrollTo({ top: Math.max(0, fieldBottom - window.innerHeight), behavior: "smooth" });
+    window.setTimeout(() => startingJump.classList.remove("is-jumping"), 720);
+  });
   benchJump.addEventListener("click", () => {
     benchJump.classList.remove("is-jumping");
     void benchJump.offsetWidth;

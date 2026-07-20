@@ -935,6 +935,7 @@
     }
     .bench-jump:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
     .bench-jump.is-jumping { animation: bench-jump-press 700ms ease; }
+    .starting-jump { bottom: 78px; }
 
     @keyframes bench-jump-press {
       0% { transform: scale(1); }
@@ -1081,6 +1082,7 @@
     </footer>
   </main>
 
+  <button class="bench-jump starting-jump" id="starting-jump" type="button" aria-controls="field">Starting</button>
   <button class="bench-jump" id="bench-jump" type="button" aria-controls="bench-section">Bench</button>
 
   <script type="text/plain" id="legacy-lineup-script">
@@ -1351,6 +1353,6 @@
     applyFixture(initialFixture, Boolean(requestedMatch));
   </script>
   <script src="data/matches.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=20260720-1"></script>
 </body>
 </html>
