@@ -342,7 +342,24 @@
       letter-spacing: .1em;
       text-transform: uppercase;
     }
-    .key-item { display: inline-flex; align-items: center; gap: 6px; }
+    .key-item {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      transition: color .2s ease, opacity .2s ease;
+    }
+    .key-item:hover,
+    .key-item[aria-pressed="true"] { color: #FFFFFF; }
+    .key-item:focus-visible { outline: 2px solid #fff; outline-offset: 3px; border-radius: 2px; }
+    .key-item:disabled { opacity: .34; cursor: not-allowed; }
+    .previous-status-key.is-filtering .key-item[aria-pressed="false"] { opacity: .34; }
 
     .previous-movement-icon,
     .injury-icon {
@@ -1001,12 +1018,12 @@
       <span class="sr-only" id="filter-status" aria-live="polite">All Starting XV players are visible.</span>
     </div>
 
-    <div class="previous-status-key" aria-label="Previous player status icon key">
+    <div class="previous-status-key" id="previous-status-filters" aria-label="Filter the Starting XV by last-week player outcome">
       <strong>Last-week player</strong>
-      <span class="key-item"><b class="previous-movement-icon out" aria-hidden="true">↓</b> Dropped out of the 23</span>
-      <span class="key-item"><b class="previous-movement-icon bench" aria-hidden="true">↓</b> Dropped to the bench</span>
-      <span class="key-item"><b class="previous-movement-icon start" aria-hidden="true">↑</b> Promoted to Starting XV</span>
-      <span class="key-item"><b class="injury-icon" aria-hidden="true">✚</b> Confirmed injury</span>
+      <button class="key-item" type="button" data-previous-filter="out" aria-pressed="false"><b class="previous-movement-icon out" aria-hidden="true">↓</b> Dropped out of the 23</button>
+      <button class="key-item" type="button" data-previous-filter="bench" aria-pressed="false"><b class="previous-movement-icon bench" aria-hidden="true">↓</b> Dropped to the bench</button>
+      <button class="key-item" type="button" data-previous-filter="promoted" aria-pressed="false"><b class="previous-movement-icon start" aria-hidden="true">↑</b> Promoted to Starting XV</button>
+      <button class="key-item" type="button" data-previous-filter="injured" aria-pressed="false"><b class="injury-icon" aria-hidden="true">✚</b> Confirmed injury</button>
     </div>
 
     <div class="field-shell">

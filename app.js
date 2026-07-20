@@ -169,21 +169,34 @@
   function configureStarterFilters(starters) {
     const summary = document.getElementById("summary-filters");
     const buttons = [...summary.querySelectorAll("[data-filter]")];
+    const previousStatusFilters = document.getElementById("previous-status-filters");
+    const previousFilterButtons = [...previousStatusFilters.querySelectorAll("[data-previous-filter]")];
     const cards = [...document.querySelectorAll(".position-card")];
     const status = document.getElementById("filter-status");
     let activeFilter = null;
     let activePreviousCard = null;
+    let activePreviousFilter = null;
+
+    function matchesPreviousFilter(card, filter) {
+      if (filter === "promoted") return card.dataset.state === "promoted";
+      if (filter === "injured") return card.dataset.previousInjured === "true";
+      return card.dataset.previousMovement === filter;
+    }
 
     function applyStarterHighlight(message) {
       summary.classList.toggle("is-filtering", Boolean(activeFilter));
+      previousStatusFilters.classList.toggle("is-filtering", Boolean(activePreviousFilter));
       buttons.forEach(item => item.setAttribute("aria-pressed", String(item.dataset.filter === activeFilter)));
+      previousFilterButtons.forEach(item => item.setAttribute("aria-pressed", String(item.dataset.previousFilter === activePreviousFilter)));
       cards.forEach(card => {
         const previousPlayer = card.querySelector(".previous-player");
         const matchesFilter = activePreviousCard
           ? card === activePreviousCard
-          : !activeFilter || card.dataset.state === activeFilter;
+          : activePreviousFilter
+            ? matchesPreviousFilter(card, activePreviousFilter)
+            : !activeFilter || card.dataset.state === activeFilter;
         card.classList.toggle("is-dimmed", !matchesFilter);
-        card.classList.toggle("is-highlighted", Boolean(activeFilter || activePreviousCard) && matchesFilter);
+        card.classList.toggle("is-highlighted", Boolean(activeFilter || activePreviousCard || activePreviousFilter) && matchesFilter);
         previousPlayer?.setAttribute("aria-pressed", String(card === activePreviousCard));
       });
       status.textContent = message || "All Starting XV players are visible.";
@@ -197,8 +210,26 @@
       button.setAttribute("aria-pressed", "false");
       button.onclick = () => {
         activePreviousCard = null;
+        activePreviousFilter = null;
         activeFilter = activeFilter === button.dataset.filter ? null : button.dataset.filter;
         applyStarterHighlight(activeFilter ? `${button.textContent.replace(/\s+/g, " ").trim()} highlighted. Other Starting XV players are dimmed.` : null);
+      };
+    });
+
+    previousFilterButtons.forEach(button => {
+      const filter = button.dataset.previousFilter;
+      const count = cards.filter(card => matchesPreviousFilter(card, filter)).length;
+      button.disabled = count === 0;
+      button.setAttribute("aria-disabled", String(count === 0));
+      button.setAttribute("aria-pressed", "false");
+      button.onclick = () => {
+        if (button.disabled) return;
+        activeFilter = null;
+        activePreviousCard = null;
+        activePreviousFilter = activePreviousFilter === filter ? null : filter;
+        applyStarterHighlight(activePreviousFilter
+          ? `${button.textContent.replace(/\s+/g, " ").trim()} highlighted. Other Starting XV players are dimmed.`
+          : null);
       };
     });
 
@@ -214,6 +245,7 @@
         event.preventDefault();
         event.stopPropagation();
         activeFilter = null;
+        activePreviousFilter = null;
         activePreviousCard = activePreviousCard === card ? null : card;
         flashPlayer(card);
         applyStarterHighlight(activePreviousCard
@@ -262,7 +294,7 @@
     const { starters, bench } = buildComparison(match, previousMatch);
     field.querySelectorAll(".position-card").forEach(card => card.remove());
     field.insertAdjacentHTML("beforeend", starters.map(player => `
-      <article class="position-card ${player.state}" data-state="${player.state}" role="button" tabindex="0" aria-label="Select ${player.name}, jersey ${player.n}" style="left:${player.x}%;top:${player.y}%">
+      <article class="position-card ${player.state}" data-state="${player.state}" data-previous-movement="${player.prevMovement || ""}" data-previous-injured="${Boolean(player.injury)}" role="button" tabindex="0" aria-label="Select ${player.name}, jersey ${player.n}" style="left:${player.x}%;top:${player.y}%">
         <div class="position-kicker"><span>#${player.n}</span><span>${player.p}</span></div>
         <div class="comparison">
           <div class="previous"><span class="previous-label">${previousMatch ? previousMatch.opponent : "Previous"}</span>${previousStatus(player)}</div>
