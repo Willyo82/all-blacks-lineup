@@ -29,6 +29,7 @@
   const availabilityPlayers = document.getElementById("availability-players");
   const field = document.getElementById("field");
   const benchContainer = document.getElementById("bench");
+  const benchJump = document.getElementById("bench-jump");
   const flashTimers = new WeakMap();
   const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "your device timezone";
   const dateFormatter = new Intl.DateTimeFormat(undefined, { day: "2-digit", month: "short", year: "numeric" });
@@ -171,6 +172,22 @@
     const cards = [...document.querySelectorAll(".position-card")];
     const status = document.getElementById("filter-status");
     let activeFilter = null;
+    let activePreviousCard = null;
+
+    function applyStarterHighlight(message) {
+      summary.classList.toggle("is-filtering", Boolean(activeFilter));
+      buttons.forEach(item => item.setAttribute("aria-pressed", String(item.dataset.filter === activeFilter)));
+      cards.forEach(card => {
+        const previousPlayer = card.querySelector(".previous-player");
+        const matchesFilter = activePreviousCard
+          ? card === activePreviousCard
+          : !activeFilter || card.dataset.state === activeFilter;
+        card.classList.toggle("is-dimmed", !matchesFilter);
+        card.classList.toggle("is-highlighted", Boolean(activeFilter || activePreviousCard) && matchesFilter);
+        previousPlayer?.setAttribute("aria-pressed", String(card === activePreviousCard));
+      });
+      status.textContent = message || "All Starting XV players are visible.";
+    }
 
     buttons.forEach(button => {
       const count = starters.filter(player => player.state === button.dataset.filter).length;
@@ -179,15 +196,34 @@
       button.setAttribute("aria-disabled", String(count === 0));
       button.setAttribute("aria-pressed", "false");
       button.onclick = () => {
+        activePreviousCard = null;
         activeFilter = activeFilter === button.dataset.filter ? null : button.dataset.filter;
-        summary.classList.toggle("is-filtering", Boolean(activeFilter));
-        buttons.forEach(item => item.setAttribute("aria-pressed", String(item.dataset.filter === activeFilter)));
-        cards.forEach(card => {
-          const matchesFilter = !activeFilter || card.dataset.state === activeFilter;
-          card.classList.toggle("is-dimmed", !matchesFilter);
-          card.classList.toggle("is-highlighted", Boolean(activeFilter) && matchesFilter);
-        });
-        status.textContent = activeFilter ? `${button.textContent.replace(/\s+/g, " ").trim()} highlighted. Other Starting XV players are dimmed.` : "All Starting XV players are visible.";
+        applyStarterHighlight(activeFilter ? `${button.textContent.replace(/\s+/g, " ").trim()} highlighted. Other Starting XV players are dimmed.` : null);
+      };
+    });
+
+    cards.forEach(card => {
+      const previousPlayer = card.querySelector(".previous-player");
+      if (!previousPlayer) return;
+      previousPlayer.setAttribute("role", "button");
+      previousPlayer.setAttribute("tabindex", "0");
+      previousPlayer.setAttribute("aria-pressed", "false");
+      previousPlayer.setAttribute("aria-label", `Highlight last week player ${previousPlayer.textContent.trim()}`);
+
+      const togglePreviousPlayer = event => {
+        event.preventDefault();
+        event.stopPropagation();
+        activeFilter = null;
+        activePreviousCard = activePreviousCard === card ? null : card;
+        flashPlayer(card);
+        applyStarterHighlight(activePreviousCard
+          ? `${previousPlayer.textContent.trim()} from last week is highlighted. Other Starting XV players are dimmed.`
+          : null);
+      };
+
+      previousPlayer.onclick = togglePreviousPlayer;
+      previousPlayer.onkeydown = event => {
+        if (event.key === "Enter" || event.key === " ") togglePreviousPlayer(event);
       };
     });
   }
@@ -293,6 +329,7 @@
     matchSelect.value = match.id;
     releasedLineup.hidden = !hasLineup;
     unreleasedPanel.hidden = hasLineup;
+    benchJump.hidden = !hasLineup;
     availabilityStrip.hidden = !hasLineup || !(match.unavailable || []).length;
 
     if (hasLineup) {
@@ -341,6 +378,13 @@
   }
 
   populateFixtureSelector();
+  benchJump.addEventListener("click", () => {
+    benchJump.classList.remove("is-jumping");
+    void benchJump.offsetWidth;
+    benchJump.classList.add("is-jumping");
+    benchContainer.scrollIntoView({ behavior: "smooth", block: "end" });
+    window.setTimeout(() => benchJump.classList.remove("is-jumping"), 720);
+  });
   matchSelect.addEventListener("change", () => applyFixture(matches.find(match => match.id === matchSelect.value) || matches[0]));
   const requestedMatch = new URLSearchParams(window.location.search).get("match");
   const initialMatch = matches.find(match => match.id === requestedMatch) || [...matches].reverse().find(match => match.lineup) || matches[0];

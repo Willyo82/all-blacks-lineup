@@ -557,7 +557,15 @@
       justify-content: flex-end;
       gap: 5px;
     }
-    .previous-player { min-width: 0; }
+    .previous-player {
+      min-width: 0;
+      cursor: pointer;
+    }
+    .previous-player:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
     .previous-badges {
       display: inline-flex;
       align-items: center;
@@ -885,6 +893,39 @@
       100% { outline-color: rgba(255,49,42,0); box-shadow: 0 0 0 0 rgba(255,49,42,0); }
     }
 
+    .bench-jump {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 30;
+      min-width: 92px;
+      padding: 12px 18px;
+      border: 1px solid rgba(217,255,67,.55);
+      border-radius: 999px;
+      background: rgba(12,17,13,.94);
+      color: #fff;
+      box-shadow: 0 12px 30px rgba(0,0,0,.44), 0 0 20px rgba(217,255,67,.12);
+      font: 800 12px/1 Inter, "Segoe UI", Arial, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .bench-jump:hover {
+      transform: translateY(-2px);
+      border-color: var(--lime);
+      box-shadow: 0 14px 34px rgba(0,0,0,.5), 0 0 24px rgba(217,255,67,.22);
+    }
+    .bench-jump:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    .bench-jump.is-jumping { animation: bench-jump-press 700ms ease; }
+
+    @keyframes bench-jump-press {
+      0% { transform: scale(1); }
+      30% { transform: scale(.92); box-shadow: 0 0 0 5px rgba(217,255,67,.18), 0 0 34px rgba(217,255,67,.36); }
+      65% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
     footer {
       display: flex;
       justify-content: space-between;
@@ -987,7 +1028,7 @@
       </section>
     </div>
 
-    <section class="bench-section">
+    <section class="bench-section" id="bench-section">
       <div class="section-heading">
         <div>
           <div class="eyebrow">Replacements</div>
@@ -1022,6 +1063,8 @@
       <span id="footer-source-links">Sources: <a href="https://www.allblacks.com/news/all-blacks/all-blacks-team-named-to-play-ireland-in-auckland">official Ireland team announcement and injury list</a> · <a href="https://www.allblacks.com/team/all-blacks/fixtures">official fixtures</a> · <a href="https://www.allblacks.com/team/all-blacks/squad">current squad</a></span>
     </footer>
   </main>
+
+  <button class="bench-jump" id="bench-jump" type="button" aria-controls="bench-section">Bench</button>
 
   <script type="text/plain" id="legacy-lineup-script">
     const photoRoot = "assets/players/";
