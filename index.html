@@ -342,7 +342,24 @@
       letter-spacing: .1em;
       text-transform: uppercase;
     }
-    .key-item { display: inline-flex; align-items: center; gap: 6px; }
+    .key-item {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      transition: color .2s ease, opacity .2s ease;
+    }
+    .key-item:hover,
+    .key-item[aria-pressed="true"] { color: #FFFFFF; }
+    .key-item:focus-visible { outline: 2px solid #fff; outline-offset: 3px; border-radius: 2px; }
+    .key-item:disabled { opacity: .34; cursor: not-allowed; }
+    .previous-status-key.is-filtering .key-item[aria-pressed="false"] { opacity: .34; }
 
     .previous-movement-icon,
     .injury-icon {
@@ -557,7 +574,15 @@
       justify-content: flex-end;
       gap: 5px;
     }
-    .previous-player { min-width: 0; }
+    .previous-player {
+      min-width: 0;
+      cursor: pointer;
+    }
+    .previous-player:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
     .previous-badges {
       display: inline-flex;
       align-items: center;
@@ -885,6 +910,60 @@
       100% { outline-color: rgba(255,49,42,0); box-shadow: 0 0 0 0 rgba(255,49,42,0); }
     }
 
+    .bench-jump {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 30;
+      min-width: 92px;
+      padding: 12px 18px;
+      border: 1px solid rgba(217,255,67,.55);
+      border-radius: 999px;
+      background: rgba(12,17,13,.94);
+      color: #fff;
+      box-shadow: 0 12px 30px rgba(0,0,0,.44), 0 0 20px rgba(217,255,67,.12);
+      font: 800 12px/1 Inter, "Segoe UI", Arial, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .bench-jump:hover {
+      transform: translateY(-2px);
+      border-color: var(--lime);
+      box-shadow: 0 14px 34px rgba(0,0,0,.5), 0 0 24px rgba(217,255,67,.22);
+    }
+    .bench-jump:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    .bench-jump.is-jumping { animation: bench-jump-press 700ms ease; }
+    .starting-jump { bottom: 78px; }
+
+    .site-watermark {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      z-index: 20;
+      transform: translate(-50%, -50%) rotate(-17deg);
+      color: rgba(255,255,255,.025);
+      font-size: clamp(42px, 6.8vw, 124px);
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: .045em;
+      text-align: center;
+      text-decoration: none;
+      text-transform: uppercase;
+      text-shadow: 0 0 2px rgba(255,255,255,.01);
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @keyframes bench-jump-press {
+      0% { transform: scale(1); }
+      30% { transform: scale(.92); box-shadow: 0 0 0 5px rgba(217,255,67,.18), 0 0 34px rgba(217,255,67,.36); }
+      65% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
     footer {
       display: flex;
       justify-content: space-between;
@@ -960,12 +1039,12 @@
       <span class="sr-only" id="filter-status" aria-live="polite">All Starting XV players are visible.</span>
     </div>
 
-    <div class="previous-status-key" aria-label="Previous player status icon key">
+    <div class="previous-status-key" id="previous-status-filters" aria-label="Filter the Starting XV by last-week player outcome">
       <strong>Last-week player</strong>
-      <span class="key-item"><b class="previous-movement-icon out" aria-hidden="true">↓</b> Dropped out of the 23</span>
-      <span class="key-item"><b class="previous-movement-icon bench" aria-hidden="true">↓</b> Dropped to the bench</span>
-      <span class="key-item"><b class="previous-movement-icon start" aria-hidden="true">↑</b> Promoted to Starting XV</span>
-      <span class="key-item"><b class="injury-icon" aria-hidden="true">✚</b> Confirmed injury</span>
+      <button class="key-item" type="button" data-previous-filter="out" aria-pressed="false"><b class="previous-movement-icon out" aria-hidden="true">↓</b> Dropped out of the 23</button>
+      <button class="key-item" type="button" data-previous-filter="bench" aria-pressed="false"><b class="previous-movement-icon bench" aria-hidden="true">↓</b> Dropped to the bench</button>
+      <button class="key-item" type="button" data-previous-filter="promoted" aria-pressed="false"><b class="previous-movement-icon start" aria-hidden="true">↑</b> Promoted to Starting XV</button>
+      <button class="key-item" type="button" data-previous-filter="injured" aria-pressed="false"><b class="injury-icon" aria-hidden="true">✚</b> Confirmed injury</button>
     </div>
 
     <div class="field-shell">
@@ -987,7 +1066,7 @@
       </section>
     </div>
 
-    <section class="bench-section">
+    <section class="bench-section" id="bench-section">
       <div class="section-heading">
         <div>
           <div class="eyebrow">Replacements</div>
@@ -1022,6 +1101,10 @@
       <span id="footer-source-links">Sources: <a href="https://www.allblacks.com/news/all-blacks/all-blacks-team-named-to-play-ireland-in-auckland">official Ireland team announcement and injury list</a> · <a href="https://www.allblacks.com/team/all-blacks/fixtures">official fixtures</a> · <a href="https://www.allblacks.com/team/all-blacks/squad">current squad</a></span>
     </footer>
   </main>
+
+  <a class="site-watermark" href="https://www.youtube.com/@RugbyFromTheStands" tabindex="-1" aria-hidden="true">Rugby From The Stands</a>
+  <button class="bench-jump starting-jump" id="starting-jump" type="button" aria-controls="field">Starting</button>
+  <button class="bench-jump" id="bench-jump" type="button" aria-controls="bench-section">Bench</button>
 
   <script type="text/plain" id="legacy-lineup-script">
     const photoRoot = "assets/players/";
@@ -1291,6 +1374,6 @@
     applyFixture(initialFixture, Boolean(requestedMatch));
   </script>
   <script src="data/matches.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=20260720-1"></script>
 </body>
 </html>

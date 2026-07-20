@@ -29,6 +29,8 @@
   const availabilityPlayers = document.getElementById("availability-players");
   const field = document.getElementById("field");
   const benchContainer = document.getElementById("bench");
+  const startingJump = document.getElementById("starting-jump");
+  const benchJump = document.getElementById("bench-jump");
   const flashTimers = new WeakMap();
   const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "your device timezone";
   const dateFormatter = new Intl.DateTimeFormat(undefined, { day: "2-digit", month: "short", year: "numeric" });
@@ -168,9 +170,38 @@
   function configureStarterFilters(starters) {
     const summary = document.getElementById("summary-filters");
     const buttons = [...summary.querySelectorAll("[data-filter]")];
+    const previousStatusFilters = document.getElementById("previous-status-filters");
+    const previousFilterButtons = [...previousStatusFilters.querySelectorAll("[data-previous-filter]")];
     const cards = [...document.querySelectorAll(".position-card")];
     const status = document.getElementById("filter-status");
     let activeFilter = null;
+    let activePreviousCard = null;
+    let activePreviousFilter = null;
+
+    function matchesPreviousFilter(card, filter) {
+      if (filter === "promoted") return card.dataset.state === "promoted";
+      if (filter === "injured") return card.dataset.previousInjured === "true";
+      return card.dataset.previousMovement === filter;
+    }
+
+    function applyStarterHighlight(message) {
+      summary.classList.toggle("is-filtering", Boolean(activeFilter));
+      previousStatusFilters.classList.toggle("is-filtering", Boolean(activePreviousFilter));
+      buttons.forEach(item => item.setAttribute("aria-pressed", String(item.dataset.filter === activeFilter)));
+      previousFilterButtons.forEach(item => item.setAttribute("aria-pressed", String(item.dataset.previousFilter === activePreviousFilter)));
+      cards.forEach(card => {
+        const previousPlayer = card.querySelector(".previous-player");
+        const matchesFilter = activePreviousCard
+          ? card === activePreviousCard
+          : activePreviousFilter
+            ? matchesPreviousFilter(card, activePreviousFilter)
+            : !activeFilter || card.dataset.state === activeFilter;
+        card.classList.toggle("is-dimmed", !matchesFilter);
+        card.classList.toggle("is-highlighted", Boolean(activeFilter || activePreviousCard || activePreviousFilter) && matchesFilter);
+        previousPlayer?.setAttribute("aria-pressed", String(card === activePreviousCard));
+      });
+      status.textContent = message || "All Starting XV players are visible.";
+    }
 
     buttons.forEach(button => {
       const count = starters.filter(player => player.state === button.dataset.filter).length;
@@ -179,15 +210,53 @@
       button.setAttribute("aria-disabled", String(count === 0));
       button.setAttribute("aria-pressed", "false");
       button.onclick = () => {
+        activePreviousCard = null;
+        activePreviousFilter = null;
         activeFilter = activeFilter === button.dataset.filter ? null : button.dataset.filter;
-        summary.classList.toggle("is-filtering", Boolean(activeFilter));
-        buttons.forEach(item => item.setAttribute("aria-pressed", String(item.dataset.filter === activeFilter)));
-        cards.forEach(card => {
-          const matchesFilter = !activeFilter || card.dataset.state === activeFilter;
-          card.classList.toggle("is-dimmed", !matchesFilter);
-          card.classList.toggle("is-highlighted", Boolean(activeFilter) && matchesFilter);
-        });
-        status.textContent = activeFilter ? `${button.textContent.replace(/\s+/g, " ").trim()} highlighted. Other Starting XV players are dimmed.` : "All Starting XV players are visible.";
+        applyStarterHighlight(activeFilter ? `${button.textContent.replace(/\s+/g, " ").trim()} highlighted. Other Starting XV players are dimmed.` : null);
+      };
+    });
+
+    previousFilterButtons.forEach(button => {
+      const filter = button.dataset.previousFilter;
+      const count = cards.filter(card => matchesPreviousFilter(card, filter)).length;
+      button.disabled = count === 0;
+      button.setAttribute("aria-disabled", String(count === 0));
+      button.setAttribute("aria-pressed", "false");
+      button.onclick = () => {
+        if (button.disabled) return;
+        activeFilter = null;
+        activePreviousCard = null;
+        activePreviousFilter = activePreviousFilter === filter ? null : filter;
+        applyStarterHighlight(activePreviousFilter
+          ? `${button.textContent.replace(/\s+/g, " ").trim()} highlighted. Other Starting XV players are dimmed.`
+          : null);
+      };
+    });
+
+    cards.forEach(card => {
+      const previousPlayer = card.querySelector(".previous-player");
+      if (!previousPlayer) return;
+      previousPlayer.setAttribute("role", "button");
+      previousPlayer.setAttribute("tabindex", "0");
+      previousPlayer.setAttribute("aria-pressed", "false");
+      previousPlayer.setAttribute("aria-label", `Highlight last week player ${previousPlayer.textContent.trim()}`);
+
+      const togglePreviousPlayer = event => {
+        event.preventDefault();
+        event.stopPropagation();
+        activeFilter = null;
+        activePreviousFilter = null;
+        activePreviousCard = activePreviousCard === card ? null : card;
+        flashPlayer(card);
+        applyStarterHighlight(activePreviousCard
+          ? `${previousPlayer.textContent.trim()} from last week is highlighted. Other Starting XV players are dimmed.`
+          : null);
+      };
+
+      previousPlayer.onclick = togglePreviousPlayer;
+      previousPlayer.onkeydown = event => {
+        if (event.key === "Enter" || event.key === " ") togglePreviousPlayer(event);
       };
     });
   }
@@ -226,7 +295,7 @@
     const { starters, bench } = buildComparison(match, previousMatch);
     field.querySelectorAll(".position-card").forEach(card => card.remove());
     field.insertAdjacentHTML("beforeend", starters.map(player => `
-      <article class="position-card ${player.state}" data-state="${player.state}" role="button" tabindex="0" aria-label="Select ${player.name}, jersey ${player.n}" style="left:${player.x}%;top:${player.y}%">
+      <article class="position-card ${player.state}" data-state="${player.state}" data-previous-movement="${player.prevMovement || ""}" data-previous-injured="${Boolean(player.injury)}" role="button" tabindex="0" aria-label="Select ${player.name}, jersey ${player.n}" style="left:${player.x}%;top:${player.y}%">
         <div class="position-kicker"><span>#${player.n}</span><span>${player.p}</span></div>
         <div class="comparison">
           <div class="previous"><span class="previous-label">${previousMatch ? previousMatch.opponent : "Previous"}</span>${previousStatus(player)}</div>
@@ -293,6 +362,8 @@
     matchSelect.value = match.id;
     releasedLineup.hidden = !hasLineup;
     unreleasedPanel.hidden = hasLineup;
+    startingJump.hidden = !hasLineup;
+    benchJump.hidden = !hasLineup;
     availabilityStrip.hidden = !hasLineup || !(match.unavailable || []).length;
 
     if (hasLineup) {
@@ -341,6 +412,21 @@
   }
 
   populateFixtureSelector();
+  startingJump.addEventListener("click", () => {
+    startingJump.classList.remove("is-jumping");
+    void startingJump.offsetWidth;
+    startingJump.classList.add("is-jumping");
+    const fieldBottom = field.getBoundingClientRect().bottom + window.scrollY;
+    window.scrollTo({ top: Math.max(0, fieldBottom - window.innerHeight), behavior: "smooth" });
+    window.setTimeout(() => startingJump.classList.remove("is-jumping"), 720);
+  });
+  benchJump.addEventListener("click", () => {
+    benchJump.classList.remove("is-jumping");
+    void benchJump.offsetWidth;
+    benchJump.classList.add("is-jumping");
+    benchContainer.scrollIntoView({ behavior: "smooth", block: "end" });
+    window.setTimeout(() => benchJump.classList.remove("is-jumping"), 720);
+  });
   matchSelect.addEventListener("change", () => applyFixture(matches.find(match => match.id === matchSelect.value) || matches[0]));
   const requestedMatch = new URLSearchParams(window.location.search).get("match");
   const initialMatch = matches.find(match => match.id === requestedMatch) || [...matches].reverse().find(match => match.lineup) || matches[0];
