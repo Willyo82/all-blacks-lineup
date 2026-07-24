@@ -1,19 +1,28 @@
-# All Blacks Matchday 23 website
+# All Blacks selection tracker
 
-This folder is ready to publish as a static website. It contains only the public HTML page and player portrait assets; the Excel tracker, PBIX files, backups, and project notes are not included.
+A fan-built visual tracker for understanding how the All Blacks matchday 23 and wider squad change from one selection to the next.
 
-## Preview locally
+Built by [Willy (Willyo82)](https://github.com/Willyo82) and hosted on GitHub Pages.
 
-Open `Match_Day.html` in a browser. The match selector works without a server, and kick-off times are shown in the visitor's device timezone. Opening `index.html` redirects to the Match Day view so the GitHub Pages root address continues to work.
+## Open the tracker
 
-## Publish with GitHub Pages
+- [Match Day team](https://willyo82.github.io/all-blacks-lineup/Match_Day.html)
+- [Current squad](https://willyo82.github.io/all-blacks-lineup/squad.html?squad=2026-current)
 
-1. Create a new GitHub repository.
-2. Upload the contents of this folder so `index.html` and `Match_Day.html` are at the repository root.
-3. Open the repository's **Settings → Pages**.
-4. Under **Build and deployment**, choose **Deploy from a branch**.
-5. Select the `main` branch and the `/ (root)` folder, then save.
-6. Open the Pages URL GitHub provides after the deployment finishes.
+The Match Day view compares each selected team with the previous released lineup, making retained players, positional moves, bench promotions, injuries and players leaving the 23 easy to see. The Squad view groups the wider squad by playing unit and is ready to highlight changes when touring squads are announced.
+
+## Inspired by Rugby From The Stands
+
+This project was inspired by [Rugby From The Stands](https://www.youtube.com/@RugbyFromTheStands), a fan-led rugby channel built around honest opinions, match breakdowns and community conversation.
+
+- [Watch Rugby From The Stands](https://www.youtube.com/@RugbyFromTheStands)
+- [Join the Rugby From The Stands community](https://www.youtube.com/@RugbyFromTheStands/community)
+
+The tracker is an independently built fan project and is not owned by, operated by or published under the Rugby From The Stands brand.
+
+## Run locally
+
+Open `Match_Day.html` in a browser. The match selector works without a server, and kick-off times are shown in the visitor's device timezone. Opening `index.html` redirects to the Match Day view so old links and the GitHub Pages root address continue to work.
 
 ## Weekly updates
 
@@ -32,3 +41,15 @@ The website automatically finds the previous released match and calculates retai
 When no match is specified in the address, the Match Day view sorts fixtures by date, finds the nearest fixture whose team is not released, and opens the released team immediately before it.
 
 After the match, change `status` to `"completed"` and add the result as `score: { allBlacks: 00, opponent: 00 }`.
+
+## Security and privacy
+
+This is a static website with no server-side code, accounts, forms, cookies, analytics or payment processing. It does not collect personal information from visitors.
+
+Only files intended for public display belong in this repository. Never commit passwords, API keys, private spreadsheets, PBIX files, backups or unpublished team information. If a sensitive value is committed accidentally, revoke it immediately and remove it from the repository history; deleting it in a later commit is not enough.
+
+## Attribution and disclaimer
+
+This is an independent, unofficial fan project. It is not affiliated with or endorsed by New Zealand Rugby, the All Blacks or Rugby From The Stands.
+
+Player names, team marks and official player portraits remain the property of their respective rights holders. Match and squad information should be checked against official announcements before publication.
