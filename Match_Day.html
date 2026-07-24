@@ -1,0 +1,1411 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>All Blacks — Matchday 23 tracker</title>
+  <style>
+    :root {
+      --ink: #f5f7f4;
+      --muted: #aeb8b0;
+      --panel: #101511;
+      --line: rgba(255,255,255,.56);
+      --lime: #d9ff43;
+      --amber: #ffbf47;
+      --violet: #ba9cff;
+      --green-1: #123d24;
+      --green-2: #1c5530;
+      --green-3: #28663a;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #070908;
+      color: var(--ink);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1900px;
+      margin: 0 auto;
+      padding: 34px 42px 52px;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(217,255,67,.09), transparent 22%),
+        radial-gradient(circle at 92% 4%, rgba(186,156,255,.08), transparent 25%),
+        #070908;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .view-label {
+      color: #69736c;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .view-link {
+      color: #dce3de;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .view-link:hover { color: var(--lime); }
+
+    [hidden] { display: none !important; }
+
+    .fixture-picker {
+      display: grid;
+      grid-template-columns: minmax(180px, 260px) minmax(320px, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 16px 18px;
+      border: 1px solid rgba(217,255,67,.24);
+      border-radius: 18px;
+      background: linear-gradient(110deg, rgba(217,255,67,.09), rgba(17,22,18,.9) 38%, rgba(186,156,255,.07));
+      box-shadow: 0 18px 42px rgba(0,0,0,.24);
+    }
+
+    .fixture-picker-copy strong {
+      display: block;
+      font-size: 15px;
+      letter-spacing: .01em;
+    }
+
+    .fixture-picker-copy span,
+    .fixture-timezone {
+      display: block;
+      margin-top: 4px;
+      color: #929d95;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .fixture-select-wrap { position: relative; }
+    .fixture-select-wrap::after {
+      content: "▾";
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      color: var(--lime);
+      font-size: 16px;
+      pointer-events: none;
+      transform: translateY(-52%);
+    }
+
+    #match-select {
+      width: 100%;
+      min-height: 48px;
+      appearance: none;
+      padding: 0 46px 0 16px;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 12px;
+      background: #111713;
+      color: #fff;
+      font: 700 14px/1.3 Inter, "Segoe UI", Arial, sans-serif;
+      cursor: pointer;
+    }
+
+    #match-select:focus-visible {
+      outline: 2px solid var(--lime);
+      outline-offset: 3px;
+    }
+
+    .fixture-timezone {
+      max-width: 190px;
+      margin: 0;
+      text-align: right;
+    }
+
+    .unreleased-panel {
+      position: relative;
+      overflow: hidden;
+      min-height: 480px;
+      display: grid;
+      place-items: center;
+      margin-top: 8px;
+      padding: 46px 24px;
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 28px;
+      background:
+        linear-gradient(rgba(4,12,7,.58), rgba(4,12,7,.84)),
+        repeating-linear-gradient(90deg, transparent 0 12.4%, rgba(255,255,255,.045) 12.5% 12.65%),
+        linear-gradient(135deg, #133f25, #0b2616 60%, #09120d);
+      box-shadow: inset 0 0 100px rgba(0,0,0,.44), 0 28px 70px rgba(0,0,0,.3);
+    }
+
+    .unreleased-panel::before,
+    .unreleased-panel::after {
+      content: "";
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .unreleased-panel::before {
+      inset: 7% 4%;
+      border: 2px solid rgba(255,255,255,.2);
+      border-radius: 10px;
+    }
+
+    .unreleased-panel::after {
+      top: 7%;
+      bottom: 7%;
+      left: 50%;
+      border-left: 2px solid rgba(255,255,255,.16);
+    }
+
+    .unreleased-card {
+      position: relative;
+      z-index: 1;
+      width: min(680px, 92%);
+      padding: 34px;
+      border: 1px solid rgba(217,255,67,.25);
+      border-radius: 22px;
+      background: rgba(6,10,7,.88);
+      box-shadow: 0 30px 80px rgba(0,0,0,.5);
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .unreleased-icon {
+      width: 66px;
+      height: 66px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 18px;
+      border: 1px solid rgba(217,255,67,.35);
+      border-radius: 50%;
+      background: rgba(217,255,67,.08);
+      color: var(--lime);
+      font-size: 30px;
+    }
+
+    .unreleased-card h2 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 52px);
+      line-height: 1;
+      letter-spacing: -.035em;
+    }
+
+    .unreleased-card p {
+      max-width: 540px;
+      margin: 15px auto 0;
+      color: #b8c2ba;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .unreleased-details {
+      display: flex;
+      justify-content: center;
+      gap: 8px 18px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .unreleased-details span { color: var(--lime); }
+
+    .masthead {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 30px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin-bottom: 8px;
+      color: var(--lime);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .19em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(38px, 4vw, 68px);
+      line-height: .95;
+      letter-spacing: -.045em;
+    }
+
+    .subtitle {
+      max-width: 700px;
+      margin: 13px 0 0;
+      color: #c9d0cb;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .match-card {
+      min-width: 420px;
+      padding: 16px 18px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 16px;
+      background: rgba(17,22,18,.86);
+      box-shadow: 0 18px 44px rgba(0,0,0,.35);
+    }
+
+    .match-row {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 12px;
+      align-items: baseline;
+      padding: 5px 0;
+    }
+
+    .match-row span {
+      color: #89938c;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .match-row strong { font-size: 14px; }
+    .match-row.current strong { color: var(--lime); }
+
+    .availability-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px 16px;
+      flex-wrap: wrap;
+      margin: -4px 0 20px;
+      padding: 12px 15px;
+      border: 1px solid rgba(255,76,70,.32);
+      border-radius: 13px;
+      background: rgba(145,28,25,.14);
+      color: #f3c7c5;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .availability-strip strong {
+      color: #ff716b;
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .summary {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 0 0 20px;
+    }
+
+    .summary-chip {
+      appearance: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      background: rgba(255,255,255,.045);
+      color: #d6dcd7;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color .2s ease, background .2s ease, box-shadow .2s ease, color .2s ease, transform .2s ease, opacity .2s ease;
+    }
+
+    .summary-chip:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.3); }
+    .summary-chip:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    .summary-chip[aria-pressed="true"] {
+      border-color: var(--chip-accent, #dce3de);
+      background: color-mix(in srgb, var(--chip-accent, #dce3de) 15%, rgba(255,255,255,.05));
+      box-shadow: 0 0 0 1px var(--chip-accent, #dce3de), 0 0 24px color-mix(in srgb, var(--chip-accent, #dce3de) 35%, transparent);
+      color: #fff;
+    }
+    .summary.is-filtering .summary-chip[aria-pressed="false"] { opacity: .42; }
+
+    .summary-chip i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #6d776f;
+    }
+    .summary-chip.retained { --chip-accent: #dce3de; }
+    .summary-chip.promoted { --chip-accent: var(--lime); }
+    .summary-chip.moved { --chip-accent: var(--amber); }
+    .summary-chip.new { --chip-accent: var(--violet); }
+    .summary-chip.promoted i { background: var(--lime); }
+    .summary-chip.moved i { background: var(--amber); }
+    .summary-chip.new i { background: var(--violet); }
+
+    .previous-status-key {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin: -7px 0 17px;
+      color: #9FA9A2;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .previous-status-key > strong {
+      color: #E5EAE6;
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .key-item {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      transition: color .2s ease, opacity .2s ease;
+    }
+    .key-item:hover,
+    .key-item[aria-pressed="true"] { color: #FFFFFF; }
+    .key-item:focus-visible { outline: 2px solid #fff; outline-offset: 3px; border-radius: 2px; }
+    .key-item:disabled { opacity: .34; cursor: not-allowed; }
+    .previous-status-key.is-filtering .key-item[aria-pressed="false"] { opacity: .34; }
+
+    .previous-movement-icon,
+    .injury-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 1000;
+      line-height: 1;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.14);
+    }
+    .previous-movement-icon.out {
+      color: #FFFFFF;
+      background: #E42D35;
+      box-shadow: 0 0 14px rgba(228,45,53,.52);
+    }
+    .previous-movement-icon.bench {
+      color: #FFFFFF;
+      background: #1677D2;
+      box-shadow: 0 0 14px rgba(22,119,210,.5);
+    }
+    .previous-movement-icon.start {
+      color: #07140C;
+      background: #49DF7C;
+      box-shadow: 0 0 14px rgba(73,223,124,.52);
+    }
+    .injury-icon {
+      color: #FFFFFF;
+      background: #C6252D;
+      box-shadow: 0 0 14px rgba(198,37,45,.5);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .field-shell {
+      overflow-x: auto;
+      padding-bottom: 8px;
+      border-radius: 24px;
+    }
+
+    .field {
+      position: relative;
+      width: 100%;
+      min-width: 900px;
+      height: 930px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.24);
+      border-radius: 24px;
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,.025) 0 11%, transparent 11% 22%),
+        radial-gradient(ellipse at center, var(--green-3), var(--green-2) 54%, var(--green-1));
+      box-shadow: inset 0 0 100px rgba(0,0,0,.42), 0 24px 55px rgba(0,0,0,.36);
+    }
+
+    .touchline {
+      position: absolute;
+      inset: 3.2%;
+      border: 2px solid var(--line);
+      pointer-events: none;
+    }
+
+    .field-line {
+      position: absolute;
+      top: 3.2%;
+      bottom: 3.2%;
+      border-left: 1px solid rgba(255,255,255,.45);
+      pointer-events: none;
+    }
+    .try-left { left: 8%; border-left-width: 2px; }
+    .twenty-two-left { left: 25%; }
+    .ten-left { left: 42%; border-left-style: dashed; }
+    .halfway { left: 50%; border-left-width: 2px; }
+    .ten-right { left: 58%; border-left-style: dashed; }
+    .twenty-two-right { left: 75%; }
+    .try-right { left: 92%; border-left-width: 2px; }
+
+    .five-metre {
+      position: absolute;
+      left: 3.2%;
+      right: 3.2%;
+      border-top: 1px dashed rgba(255,255,255,.25);
+    }
+    .five-top { top: 12%; }
+    .five-bottom { bottom: 12%; }
+
+    .posts {
+      position: absolute;
+      top: 50%;
+      width: 34px;
+      height: 92px;
+      transform: translate(-50%, -50%);
+      border-left: 3px solid rgba(255,255,255,.82);
+      border-right: 3px solid rgba(255,255,255,.82);
+      filter: drop-shadow(0 4px 4px rgba(0,0,0,.35));
+    }
+    .posts::after {
+      content: "";
+      position: absolute;
+      left: -3px;
+      right: -3px;
+      top: 42px;
+      border-top: 3px solid rgba(255,255,255,.82);
+    }
+    .posts.left { left: 8%; }
+    .posts.right { left: 92%; }
+
+    .direction {
+      position: absolute;
+      left: 50%;
+      top: 18px;
+      transform: translateX(-50%);
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(6,10,7,.56);
+      color: rgba(255,255,255,.74);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .position-card {
+      position: absolute;
+      z-index: 3;
+      width: clamp(224px, 20.5vw, 272px);
+      min-height: 124px;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 13px;
+      background: rgba(7,10,8,.94);
+      box-shadow: 0 11px 24px rgba(0,0,0,.42);
+      backdrop-filter: blur(6px);
+      cursor: pointer;
+      outline: 2px solid transparent;
+      outline-offset: 3px;
+      transition: opacity .26s ease, filter .26s ease, transform .26s ease, box-shadow .26s ease;
+    }
+
+    .position-card:focus-visible,
+    .bench-row:focus-visible { outline-color: #fff; }
+    .position-card.is-dimmed {
+      z-index: 2;
+      opacity: .16;
+      filter: grayscale(1) saturate(.15);
+      transform: translate(-50%, -50%) scale(.96);
+    }
+    .position-card.is-highlighted {
+      z-index: 5;
+      box-shadow: 0 0 0 2px rgba(255,255,255,.2), 0 14px 34px rgba(0,0,0,.52);
+    }
+
+    .position-card.promoted { border-color: rgba(217,255,67,.88); }
+    .position-card.moved { border-color: rgba(255,191,71,.9); }
+    .position-card.new { border-color: rgba(186,156,255,.92); }
+
+    .position-kicker {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 30px;
+      padding: 6px 9px;
+      border-bottom: 1px solid rgba(255,255,255,.11);
+      color: #dfe4e0;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 26% 21% 1fr;
+      gap: 6px;
+      align-items: center;
+      min-height: 94px;
+      padding: 8px;
+    }
+
+    .previous {
+      min-width: 0;
+      color: #bbc3bd;
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.15;
+      text-align: right;
+    }
+    .previous > .previous-label {
+      display: block;
+      margin-bottom: 3px;
+      color: #78827b;
+      font-size: 8.5px;
+      font-weight: 800;
+      letter-spacing: .1em;
+    }
+    .previous-line {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+    }
+    .previous-player {
+      min-width: 0;
+      cursor: pointer;
+    }
+    .previous-player:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+    .previous-badges {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      flex: 0 0 auto;
+    }
+    .previous .previous-movement-icon,
+    .previous .injury-icon {
+      width: 16px;
+      height: 16px;
+      flex-basis: 16px;
+      font-size: 11px;
+    }
+    .injury-note {
+      display: block;
+      margin-top: 4px;
+      color: #FF8B80;
+      font-size: 7.5px;
+      font-weight: 900;
+      line-height: 1.12;
+      text-transform: uppercase;
+    }
+
+    .jersey {
+      position: relative;
+      width: 100%;
+      max-width: 52px;
+      height: 64px;
+      filter: drop-shadow(0 5px 8px rgba(0,0,0,.38));
+    }
+    .jersey svg { width: 100%; height: 100%; }
+
+    .current-player {
+      display: grid;
+      grid-template-columns: 42% minmax(0, 1fr);
+      gap: 7px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .face-frame {
+      width: 100%;
+      max-width: 50px;
+      height: 68px;
+      overflow: hidden;
+      border-radius: 8px;
+      background: linear-gradient(145deg, #223228, #111612);
+    }
+    .face {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      transform: scale(1.12);
+      transform-origin: center 18%;
+    }
+
+    .current-copy { min-width: 0; }
+    .current-copy strong {
+      display: block;
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.16;
+    }
+
+    .selection-meta {
+      display: block;
+      margin-top: 3px;
+      color: #8e9991;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .status {
+      display: block;
+      margin-top: 4px;
+      color: #9ca69f;
+      font-size: 8.5px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .promoted .status { color: var(--lime); }
+    .moved .status { color: var(--amber); }
+    .new .status { color: var(--violet); }
+
+    .legend {
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      z-index: 2;
+      display: flex;
+      gap: 16px;
+      transform: translateX(-50%);
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: rgba(5,8,6,.68);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .legend span::before {
+      content: "";
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-right: 5px;
+      border-radius: 50%;
+      background: #738078;
+    }
+    .legend .p::before { background: var(--lime); }
+    .legend .m::before { background: var(--amber); }
+    .legend .n::before { background: var(--violet); }
+
+    .bench-section {
+      margin-top: 30px;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 22px;
+      background: linear-gradient(145deg, rgba(18,24,19,.98), rgba(10,13,11,.98));
+      box-shadow: 0 20px 50px rgba(0,0,0,.28);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 18px;
+    }
+    .section-heading h2 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -.025em;
+    }
+    .section-heading p {
+      margin: 0;
+      color: #8f9992;
+      font-size: 12px;
+    }
+
+    .bench-heading-meta {
+      display: flex;
+      align-items: flex-end;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .bench-split {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border: 1px solid rgba(217,255,67,.38);
+      border-radius: 999px;
+      background: rgba(217,255,67,.07);
+      color: #DCE5DE;
+      font-size: 12px;
+    }
+    .bench-split > span {
+      color: var(--lime);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .bench-split strong { color: #FFFFFF; font-size: 13px; }
+    .bench-split i { color: #657068; font-style: normal; }
+
+    .bench-filter-panel {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px 14px;
+      align-items: center;
+      margin: 0 0 21px;
+      padding: 14px 16px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 16px;
+      background: rgba(255,255,255,.025);
+    }
+    .bench-filter-label {
+      color: #7F8A83;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .bench-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .bench-filter-chip {
+      --chip-accent: #DCE3DE;
+      padding: 7px 11px;
+      font-size: 11px;
+    }
+    .bench-filter-chip.new-bench { --chip-accent: var(--violet); }
+    .bench-filter-chip.retained-bench { --chip-accent: #DCE3DE; }
+    .bench-filter-chip.promoted-start { --chip-accent: #49DF7C; }
+    .bench-filter-chip.dropped-out { --chip-accent: #E42D35; }
+    .bench-filter-chip.injured { --chip-accent: #C6252D; }
+    .bench-filter-chip:disabled {
+      cursor: default;
+      opacity: .34;
+      transform: none;
+    }
+    .bench-filter-panel.is-filtering .bench-filter-chip:not([aria-pressed="true"]) { opacity: .34; }
+
+    .bench-head,
+    .bench-row {
+      display: grid;
+      grid-template-columns: 70px minmax(0, 1fr) 52px minmax(0, 1.35fr);
+      gap: 14px;
+      align-items: center;
+    }
+
+    .bench-head {
+      padding: 0 14px 9px;
+      color: #7e8881;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .bench-row {
+      position: relative;
+      min-height: 92px;
+      margin-top: 8px;
+      padding: 9px 14px;
+      border: 1px solid rgba(255,255,255,.095);
+      border-radius: 14px;
+      background: rgba(255,255,255,.025);
+      cursor: pointer;
+      outline: 2px solid transparent;
+      outline-offset: 3px;
+      transition: opacity .26s ease, filter .26s ease, transform .26s ease, box-shadow .26s ease;
+    }
+    .bench-row.new { border-color: rgba(186,156,255,.5); }
+    .bench-row.shifted { border-color: rgba(255,191,71,.42); }
+    .bench-row.is-dimmed {
+      opacity: .16;
+      filter: grayscale(1) saturate(.15);
+      transform: scale(.985);
+    }
+    .bench-row.is-highlighted {
+      box-shadow: 0 0 0 2px rgba(255,255,255,.15), 0 13px 30px rgba(0,0,0,.38);
+    }
+
+    .bench-number {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #fff;
+      font-size: 21px;
+      font-weight: 900;
+    }
+    .bench-number small {
+      color: #6f7a72;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .bench-previous {
+      color: #bcc4be;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .bench-previous .previous-line { justify-content: flex-start; }
+    .bench-previous .injury-note { font-size: 8px; }
+
+    .bench-arrow {
+      color: #657068;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .bench-current {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+    }
+    .bench-current .face-frame {
+      width: 64px;
+      max-width: 64px;
+      height: 72px;
+    }
+    .bench-current strong {
+      display: block;
+      font-size: 16px;
+    }
+    .bench-current span {
+      display: block;
+      margin-top: 4px;
+      color: #9da69f;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .bench-row.new .bench-current span { color: var(--violet); }
+    .bench-row.shifted .bench-current span { color: var(--amber); }
+
+    .position-card.click-flash,
+    .bench-row.click-flash {
+      opacity: 1 !important;
+      filter: none !important;
+      animation: red-click 900ms ease-in-out;
+    }
+
+    @keyframes red-click {
+      0% { outline-color: rgba(255,49,42,0); box-shadow: 0 0 0 0 rgba(255,49,42,0); }
+      16%, 56% {
+        outline-color: #ff312a;
+        box-shadow: 0 0 0 5px #ff312a, 0 0 42px 12px rgba(255,49,42,.78), inset 0 0 40px rgba(255,49,42,.32);
+      }
+      76% { outline-color: #ff312a; box-shadow: 0 0 0 2px rgba(255,49,42,.8), 0 0 22px rgba(255,49,42,.48), inset 0 0 20px rgba(255,49,42,.18); }
+      100% { outline-color: rgba(255,49,42,0); box-shadow: 0 0 0 0 rgba(255,49,42,0); }
+    }
+
+    .bench-jump {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 30;
+      min-width: 92px;
+      padding: 12px 18px;
+      border: 1px solid rgba(217,255,67,.55);
+      border-radius: 999px;
+      background: rgba(12,17,13,.94);
+      color: #fff;
+      box-shadow: 0 12px 30px rgba(0,0,0,.44), 0 0 20px rgba(217,255,67,.12);
+      font: 800 12px/1 Inter, "Segoe UI", Arial, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .bench-jump:hover {
+      transform: translateY(-2px);
+      border-color: var(--lime);
+      box-shadow: 0 14px 34px rgba(0,0,0,.5), 0 0 24px rgba(217,255,67,.22);
+    }
+    .bench-jump:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    .bench-jump.is-jumping { animation: bench-jump-press 700ms ease; }
+    .starting-jump { bottom: 78px; }
+
+    .site-watermark {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      z-index: 20;
+      transform: translate(-50%, -50%) rotate(-17deg);
+      color: rgba(255,255,255,.025);
+      font-size: clamp(42px, 6.8vw, 124px);
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: .045em;
+      text-align: center;
+      text-decoration: none;
+      text-transform: uppercase;
+      text-shadow: 0 0 2px rgba(255,255,255,.01);
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @keyframes bench-jump-press {
+      0% { transform: scale(1); }
+      30% { transform: scale(.92); box-shadow: 0 0 0 5px rgba(217,255,67,.18), 0 0 34px rgba(217,255,67,.36); }
+      65% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 25px;
+      margin-top: 20px;
+      padding: 0 4px;
+      color: #69736c;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+    footer a { color: #95a098; }
+
+    @media (max-width: 1100px) {
+      .page { padding: 28px 24px 44px; }
+      .fixture-picker { grid-template-columns: 1fr; }
+      .fixture-timezone { max-width: none; text-align: left; }
+      .masthead { align-items: stretch; flex-direction: column; }
+      .match-card { width: 100%; min-width: 0; }
+      .section-heading { align-items: flex-start; flex-direction: column; }
+      .bench-heading-meta { align-items: flex-start; }
+      .bench-filter-panel { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="topbar" aria-label="Website views">
+      <span class="view-label">Match Day team</span>
+      <a class="view-link" href="squad.html?squad=2026-current">Squad tracker →</a>
+    </nav>
+
+    <section class="fixture-picker" aria-label="Choose an All Blacks match">
+      <div class="fixture-picker-copy">
+        <strong>Select match</strong>
+        <span>Released lineups and upcoming fixtures</span>
+      </div>
+      <div class="fixture-select-wrap">
+        <select id="match-select" aria-label="Select match"></select>
+      </div>
+      <p class="fixture-timezone" id="fixture-timezone">Kick-off times use your device timezone.</p>
+    </section>
+
+    <header class="masthead">
+      <div>
+        <div class="eyebrow">All Blacks selection movement</div>
+        <h1 id="page-title">Last week → Ireland</h1>
+        <p class="subtitle" id="page-subtitle">The officially announced matchday 23 for Eden Park, mapped against the Italy selection. Each field card compares the same jersey number; the movement label follows this week’s player.</p>
+      </div>
+      <div class="match-card">
+        <div class="match-row"><span id="match-label-1">Last week</span><strong id="match-value-1">11 Jul 2026 · Italy · Wellington</strong></div>
+        <div class="match-row current"><span id="match-label-2">This week</span><strong id="match-value-2">18 Jul 2026 · Ireland · Eden Park</strong></div>
+        <div class="match-row"><span id="match-label-3">Kick-off</span><strong id="match-value-3">7:10pm NZST · Announced side</strong></div>
+      </div>
+    </header>
+
+    <div class="availability-strip" id="availability-strip" hidden>
+      <strong>Unavailable due to injury</strong>
+      <span id="availability-players"></span>
+    </div>
+
+    <section class="unreleased-panel" id="unreleased-panel" aria-live="polite" hidden>
+      <div class="unreleased-card">
+        <div class="unreleased-icon" aria-hidden="true">?</div>
+        <div class="eyebrow" id="unreleased-competition">Upcoming fixture</div>
+        <h2>Team not released yet</h2>
+        <p>The matchday 23 and player comparison will appear here once the official All Blacks team is announced.</p>
+        <div class="unreleased-details"><strong id="unreleased-teams">All Blacks</strong><span>•</span><strong id="unreleased-venue">Venue</strong></div>
+      </div>
+    </section>
+
+    <div id="released-lineup">
+
+    <div class="summary" id="summary-filters" aria-label="Filter the Starting XV by selection movement">
+      <button class="summary-chip retained" type="button" data-filter="retained" aria-pressed="false"><i></i><span class="starter-filter-count">10</span> retained in the same jersey</button>
+      <button class="summary-chip promoted" type="button" data-filter="promoted" aria-pressed="false"><i></i><span class="starter-filter-count">2</span> promoted from the bench</button>
+      <button class="summary-chip moved" type="button" data-filter="moved" aria-pressed="false"><i></i><span class="starter-filter-count">1</span> positional move</button>
+      <button class="summary-chip new" type="button" data-filter="new" aria-pressed="false"><i></i><span class="starter-filter-count">2</span> new to the Starting XV</button>
+      <span class="sr-only" id="filter-status" aria-live="polite">All Starting XV players are visible.</span>
+    </div>
+
+    <div class="previous-status-key" id="previous-status-filters" aria-label="Filter the Starting XV by last-week player outcome">
+      <strong>Last-week player</strong>
+      <button class="key-item" type="button" data-previous-filter="out" aria-pressed="false"><b class="previous-movement-icon out" aria-hidden="true">↓</b> Dropped out of the 23</button>
+      <button class="key-item" type="button" data-previous-filter="bench" aria-pressed="false"><b class="previous-movement-icon bench" aria-hidden="true">↓</b> Dropped to the bench</button>
+      <button class="key-item" type="button" data-previous-filter="promoted" aria-pressed="false"><b class="previous-movement-icon start" aria-hidden="true">↑</b> Promoted to Starting XV</button>
+      <button class="key-item" type="button" data-previous-filter="injured" aria-pressed="false"><b class="injury-icon" aria-hidden="true">✚</b> Confirmed injury</button>
+    </div>
+
+    <div class="field-shell">
+      <section class="field" id="field" aria-label="Starting XV rugby field comparison">
+        <div class="touchline"></div>
+        <div class="field-line try-left"></div>
+        <div class="field-line twenty-two-left"></div>
+        <div class="field-line ten-left"></div>
+        <div class="field-line halfway"></div>
+        <div class="field-line ten-right"></div>
+        <div class="field-line twenty-two-right"></div>
+        <div class="field-line try-right"></div>
+        <div class="five-metre five-top"></div>
+        <div class="five-metre five-bottom"></div>
+        <div class="posts left"></div>
+        <div class="posts right"></div>
+        <div class="direction">Backs ← field position → forwards</div>
+        <div class="legend"><span>Retained</span><span class="p">From bench</span><span class="m">Moved</span><span class="n">New to XV</span></div>
+      </section>
+    </div>
+
+    <section class="bench-section" id="bench-section">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">Replacements</div>
+          <h2>Bench comparison</h2>
+        </div>
+        <div class="bench-heading-meta">
+          <div class="bench-split" aria-label="Current bench split"><span>Bench split</span><strong><b id="bench-forward-count">5</b> forwards</strong><i>•</i><strong><b id="bench-back-count">3</b> backs</strong></div>
+          <p id="bench-summary-copy">Five new faces join this week’s bench; three remain from Italy.</p>
+        </div>
+      </div>
+      <div class="bench-filter-panel" id="bench-filters" aria-label="Filter the bench comparison">
+        <div class="bench-filter-label">This week’s bench</div>
+        <div class="bench-filter-row">
+          <button class="summary-chip bench-filter-chip new-bench" type="button" data-bench-filter="new-bench" aria-pressed="false"><i></i><span class="bench-filter-count">5</span> new to bench</button>
+          <button class="summary-chip bench-filter-chip retained-bench" type="button" data-bench-filter="retained-bench" aria-pressed="false"><i></i><span class="bench-filter-count">3</span> retained on bench</button>
+        </div>
+        <div class="bench-filter-label">Last week’s bench outcomes</div>
+        <div class="bench-filter-row">
+          <button class="summary-chip bench-filter-chip promoted-start" type="button" data-bench-filter="promoted-start" aria-pressed="false"><i></i><span class="previous-movement-icon start" aria-hidden="true">↑</span><span class="bench-filter-count">2</span> promoted to XV</button>
+          <button class="summary-chip bench-filter-chip dropped-out" type="button" data-bench-filter="dropped-out" aria-pressed="false"><i></i><span class="previous-movement-icon out" aria-hidden="true">↓</span><span class="bench-filter-count">3</span> dropped out of 23</button>
+          <button class="summary-chip bench-filter-chip injured" type="button" data-bench-filter="injured" aria-pressed="false" disabled><i></i><span class="injury-icon" aria-hidden="true">✚</span><span class="bench-filter-count">0</span> injured</button>
+        </div>
+        <span class="sr-only" id="bench-filter-status" aria-live="polite">All bench rows are visible.</span>
+      </div>
+      <div class="bench-head"><span>Jersey</span><span id="previous-bench-label">Italy bench</span><span></span><span id="current-bench-label">Ireland bench</span></div>
+      <div id="bench"></div>
+    </section>
+    </div>
+
+    <footer>
+      <span id="footer-status-copy">Portraits are official All Blacks profile images served with this site. Status is calculated from the selected matchday teams.</span>
+      <span id="footer-source-links">Sources: <a href="https://www.allblacks.com/news/all-blacks/all-blacks-team-named-to-play-ireland-in-auckland">official Ireland team announcement and injury list</a> · <a href="https://www.allblacks.com/team/all-blacks/fixtures">official fixtures</a> · <a href="https://www.allblacks.com/team/all-blacks/squad">current squad</a></span>
+    </footer>
+  </main>
+
+  <a class="site-watermark" href="https://www.youtube.com/@RugbyFromTheStands" tabindex="-1" aria-hidden="true">Rugby From The Stands</a>
+  <button class="bench-jump starting-jump" id="starting-jump" type="button" aria-controls="field">Starting</button>
+  <button class="bench-jump" id="bench-jump" type="button" aria-controls="bench-section">Bench</button>
+
+  <script type="text/plain" id="legacy-lineup-script">
+    const photoRoot = "assets/players/";
+    const fixtures = [
+      {id:"2026-07-18-IRE",competition:"2026 Nations Championship - Home",kickoff:"2026-07-18T07:10:00Z",team1:"All Blacks",team2:"Ireland",venue:"Eden Park, Auckland",released:true,previousOpponent:"Italy",previousDate:"11 Jul 2026",previousVenue:"Wellington"},
+      {id:"2026-08-07-STO",competition:"2026 Rugby's Greatest Rivalry Tour - Franchise Matches",kickoff:"2026-08-07T17:00:00Z",team1:"Stormers",team2:"All Blacks",venue:"DHL Stadium, Cape Town",released:false},
+      {id:"2026-08-11-SHA",competition:"2026 Rugby's Greatest Rivalry Tour - Franchise Matches",kickoff:"2026-08-11T17:00:00Z",team1:"Sharks",team2:"All Blacks",venue:"Hollywoodbets Kings Park, Durban",released:false},
+      {id:"2026-08-15-BUL",competition:"2026 Rugby's Greatest Rivalry Tour - Franchise Matches",kickoff:"2026-08-15T17:00:00Z",team1:"Bulls",team2:"All Blacks",venue:"Loftus Versfeld, Pretoria",released:false},
+      {id:"2026-08-25-LIO",competition:"2026 Rugby's Greatest Rivalry Tour - Franchise Matches",kickoff:"2026-08-25T17:00:00Z",team1:"Lions",team2:"All Blacks",venue:"Ellis Park, Johannesburg",released:false},
+      {id:"2026-08-22-RSA",competition:"2026 Rugby's Greatest Rivalry Tour",kickoff:"2026-08-22T15:00:00Z",team1:"South Africa",team2:"All Blacks",venue:"Ellis Park, Johannesburg",released:false},
+      {id:"2026-08-29-RSA",competition:"2026 Rugby's Greatest Rivalry Tour",kickoff:"2026-08-29T15:00:00Z",team1:"South Africa",team2:"All Blacks",venue:"DHL Stadium, Cape Town",released:false},
+      {id:"2026-09-05-RSA",competition:"2026 Rugby's Greatest Rivalry Tour",kickoff:"2026-09-05T15:00:00Z",team1:"South Africa",team2:"All Blacks",venue:"FNB Stadium, Johannesburg",released:false},
+      {id:"2026-09-12-RSA",competition:"2026 Rugby's Greatest Rivalry Tour",kickoff:"2026-09-12T15:05:00Z",team1:"South Africa",team2:"All Blacks",venue:"M&T Bank Stadium, Baltimore",released:false},
+      {id:"2026-10-10-AUS",competition:"2026 Bledisloe Cup",kickoff:"2026-10-10T06:10:00Z",team1:"All Blacks",team2:"Australia",venue:"Eden Park, Auckland",released:false},
+      {id:"2026-10-17-AUS",competition:"2026 Bledisloe Cup",kickoff:"2026-10-17T05:00:00Z",team1:"Australia",team2:"All Blacks",venue:"Accor Stadium, Sydney",released:false},
+      {id:"2026-11-07-SCO",competition:"2026 Nations Championship - Away",kickoff:"2026-11-07T14:10:00Z",team1:"Scotland",team2:"All Blacks",venue:"Scottish Gas Murrayfield, Edinburgh",released:false},
+      {id:"2026-11-14-WAL",competition:"2026 Nations Championship - Away",kickoff:"2026-11-14T14:10:00Z",team1:"Wales",team2:"All Blacks",venue:"Principality Stadium, Cardiff",released:false},
+      {id:"2026-11-21-ENG",competition:"2026 Nations Championship - Away",kickoff:"2026-11-21T14:10:00Z",team1:"England",team2:"All Blacks",venue:"Allianz Stadium, London",released:false},
+      {id:"2027-04-25-AUS",competition:"2027 ANZAC Day Bledisloe Cup",kickoff:"2027-04-25T00:00:00Z",team1:"Australia",team2:"All Blacks",venue:"Suncorp Stadium, Brisbane",released:false},
+      {id:"2027-10-02-CHI",competition:"2027 Men's Rugby World Cup",kickoff:"2027-10-02T05:15:00Z",team1:"All Blacks",team2:"Chile",venue:"Optus Stadium, Perth",released:false},
+      {id:"2027-10-09-AUS",competition:"2027 Men's Rugby World Cup",kickoff:"2027-10-09T06:10:00Z",team1:"All Blacks",team2:"Australia",venue:"Accor Stadium, Sydney",released:false},
+      {id:"2027-10-15-HKG",competition:"2027 Men's Rugby World Cup",kickoff:"2027-10-15T06:15:00Z",team1:"All Blacks",team2:"Hong Kong China",venue:"Marvel Stadium, Melbourne",released:false}
+    ];
+    const starters = [
+      {n:1,p:"Loosehead Prop",prev:"Ethan de Groot",curr:"Ethan de Groot",id:"ethan-de-groot",state:"retained",status:"Retained · same jersey",x:88,y:18},
+      {n:2,p:"Hooker",prev:"Codie Taylor",curr:"Codie Taylor",id:"codie-taylor",state:"retained",status:"Retained · same jersey",x:88,y:50},
+      {n:3,p:"Tighthead Prop",prev:"Tyrel Lomax",curr:"Tyrel Lomax",id:"tyrel-lomax",state:"retained",status:"Retained · same jersey",x:88,y:82},
+      {n:4,p:"Lock",prev:"Sam Darry",curr:"Josh Lord",id:"josh-lord",state:"promoted",status:"Promoted from bench · #19",prevMovement:"out",x:78,y:34},
+      {n:5,p:"Lock",prev:"Tupou Vaa’i",curr:"Patrick Tuipulotu",id:"patrick-tuipulotu",state:"new",status:"New to this week’s XV",x:78,y:66},
+      {n:6,p:"Blindside Flanker",prev:"Wallace Sititi",curr:"Tupou Vaa’i",id:"tupou-vaai",state:"moved",status:"Moved from lock · #5",prevMovement:"out",x:65,y:18},
+      {n:7,p:"Openside Flanker",prev:"Luke Jacobson",curr:"Luke Jacobson",id:"luke-jacobson",state:"retained",status:"Retained · same jersey",x:65,y:82},
+      {n:8,p:"Number Eight",prev:"Ardie Savea",curr:"Ardie Savea",id:"ardie-savea",state:"retained",status:"Retained · same jersey",x:65,y:50},
+      {n:9,p:"Halfback",prev:"Cameron Roigard",curr:"Cameron Roigard",id:"cameron-roigard",state:"retained",status:"Retained · same jersey",x:53,y:34},
+      {n:10,p:"First Five-Eighth",prev:"Ruben Love",curr:"Ruben Love",id:"ruben-love",state:"retained",status:"Retained · same jersey",x:53,y:66},
+      {n:11,p:"Left Wing",prev:"Leroy Carter",curr:"Josh Moorby",id:"josh-moorby",state:"promoted",status:"Promoted from bench · #23",prevMovement:"out",injury:"Shoulder injury",x:18,y:18},
+      {n:12,p:"Second Five-Eighth",prev:"Jordie Barrett",curr:"Jordie Barrett",id:"jordie-barrett",state:"retained",status:"Retained · same jersey",x:29,y:34},
+      {n:13,p:"Centre",prev:"Billy Proctor",curr:"Quinn Tupaea",id:"quinn-tupaea",state:"new",status:"New to this week’s XV",prevMovement:"out",x:29,y:66},
+      {n:14,p:"Right Wing",prev:"Will Jordan",curr:"Will Jordan",id:"will-jordan",state:"retained",status:"Retained · same jersey",x:18,y:82},
+      {n:15,p:"Fullback",prev:"Damian McKenzie",curr:"Damian McKenzie",id:"damian-mckenzie",state:"retained",status:"Retained · same jersey",x:12,y:50}
+    ];
+
+    const bench = [
+      {n:16,prev:"Samisoni Taukei’aho",curr:"Asafo Aumua",id:"asafo-aumua",state:"new",status:"New to this week’s bench",prevMovement:"out",group:"Forward"},
+      {n:17,prev:"George Bower",curr:"Xavier Numia",id:"xavier-numia",state:"new",status:"New to this week’s bench",prevMovement:"out",group:"Forward"},
+      {n:18,prev:"Pasilio Tosi",curr:"Fletcher Newell",id:"fletcher-newell",state:"new",status:"New to this week’s bench",prevMovement:"out",group:"Forward"},
+      {n:19,prev:"Josh Lord",curr:"Anton Segner",id:"anton-segner",state:"shifted",status:"Retained on bench · from #20",prevMovement:"start",group:"Forward"},
+      {n:20,prev:"Anton Segner",curr:"Peter Lakai",id:"peter-lakai",state:"new",status:"New to this week’s bench",group:"Forward"},
+      {n:21,prev:"Cortez Ratima",curr:"Cortez Ratima",id:"cortez-ratima",state:"retained",status:"Retained · same jersey",group:"Back"},
+      {n:22,prev:"Anton Lienert-Brown",curr:"Anton Lienert-Brown",id:"anton-lienert-brown",state:"retained",status:"Retained · same jersey",group:"Back"},
+      {n:23,prev:"Josh Moorby",curr:"Caleb Clarke",id:"caleb-clarke",state:"new",status:"New to this week’s bench",prevMovement:"start",group:"Back"}
+    ];
+
+    function jersey(number) {
+      const numberSize = number >= 10 ? 29 : 36;
+      return `<div class="jersey" aria-hidden="true"><svg viewBox="0 0 100 120"><path d="M25 10 8 27l12 20 8-7v68h44V40l8 7 12-20-17-17-16 10H41L25 10Z" fill="#f7f7f4" stroke="#111" stroke-width="3"/><path d="M42 20c2 9 14 9 16 0" fill="none" stroke="#111" stroke-width="3"/><text x="50" y="77" text-anchor="middle" font-family="Arial" font-size="${numberSize}" font-weight="900" fill="#090909">${number}</text></svg></div>`;
+    }
+
+    function previousStatus(player) {
+      const badges = [];
+      if (player.prevMovement === "out") {
+        badges.push('<span class="previous-movement-icon out" role="img" aria-label="Dropped out of the matchday 23" title="Dropped out of the matchday 23">↓</span>');
+      } else if (player.prevMovement === "bench") {
+        badges.push('<span class="previous-movement-icon bench" role="img" aria-label="Dropped from the Starting XV to the bench" title="Dropped from the Starting XV to the bench">↓</span>');
+      } else if (player.prevMovement === "start") {
+        badges.push('<span class="previous-movement-icon start" role="img" aria-label="Promoted from the bench to the Starting XV" title="Promoted from the bench to the Starting XV">↑</span>');
+      }
+      if (player.injury) {
+        badges.push(`<span class="injury-icon" role="img" aria-label="Confirmed injury: ${player.injury}" title="Confirmed injury: ${player.injury}">✚</span>`);
+      }
+      return `<div class="previous-line"><span class="previous-player">${player.prev}</span>${badges.length ? `<span class="previous-badges">${badges.join("")}</span>` : ""}</div>${player.injury ? `<small class="injury-note">${player.injury}</small>` : ""}`;
+    }
+
+    document.getElementById("field").insertAdjacentHTML("beforeend", starters.map(player => `
+      <article class="position-card ${player.state}" data-state="${player.state}" role="button" tabindex="0" aria-label="Select ${player.curr}, jersey ${player.n}" style="left:${player.x}%;top:${player.y}%">
+        <div class="position-kicker"><span>#${player.n}</span><span>${player.p}</span></div>
+        <div class="comparison">
+          <div class="previous"><span class="previous-label">Last week</span>${previousStatus(player)}</div>
+          ${jersey(player.n)}
+          <div class="current-player">
+            <div class="face-frame"><img class="face" src="${photoRoot}${player.id}.png" alt="${player.curr}" /></div>
+            <div class="current-copy"><strong>${player.curr}</strong><span class="status">${player.status}</span></div>
+          </div>
+        </div>
+      </article>`).join(""));
+
+    document.getElementById("bench").innerHTML = bench.map(player => `
+      <div class="bench-row ${player.state}" data-bench-filters="${[player.state === "new" ? "new-bench" : "retained-bench", player.prevMovement === "start" ? "promoted-start" : "", player.prevMovement === "out" ? "dropped-out" : "", player.injury ? "injured" : ""].filter(Boolean).join(" ")}" role="button" tabindex="0" aria-label="Select ${player.curr}, bench jersey ${player.n}">
+        <div class="bench-number">${player.n}<small>Bench</small></div>
+        <div class="bench-previous">${previousStatus(player)}</div>
+        <div class="bench-arrow">→</div>
+        <div class="bench-current">
+          <div class="face-frame"><img class="face" src="${photoRoot}${player.id}.png" alt="${player.curr}" /></div>
+          <div><strong>${player.curr}</strong><span>${player.status}</span></div>
+        </div>
+      </div>`).join("");
+
+    document.getElementById("bench-forward-count").textContent = bench.filter(player => player.group === "Forward").length;
+    document.getElementById("bench-back-count").textContent = bench.filter(player => player.group === "Back").length;
+    const newBenchCount = bench.filter(player => player.state === "new").length;
+    const retainedBenchCount = bench.length - newBenchCount;
+    document.getElementById("bench-summary-copy").textContent = `${newBenchCount} new faces join this week’s bench; ${retainedBenchCount} remain from the previous match.`;
+
+    const benchFilterPanel = document.getElementById("bench-filters");
+    const benchFilterButtons = [...benchFilterPanel.querySelectorAll("[data-bench-filter]")];
+    const benchRows = [...document.querySelectorAll(".bench-row")];
+    const benchFilterStatus = document.getElementById("bench-filter-status");
+    let activeBenchFilter = null;
+
+    for (const button of benchFilterButtons) {
+      const filter = button.dataset.benchFilter;
+      const count = benchRows.filter(row => row.dataset.benchFilters.split(" ").includes(filter)).length;
+      button.querySelector(".bench-filter-count").textContent = count;
+      button.disabled = count === 0;
+      button.setAttribute("aria-disabled", String(count === 0));
+    }
+
+    function applyBenchFilter(nextFilter) {
+      activeBenchFilter = activeBenchFilter === nextFilter ? null : nextFilter;
+      benchFilterPanel.classList.toggle("is-filtering", Boolean(activeBenchFilter));
+      benchFilterButtons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.benchFilter === activeBenchFilter)));
+      benchRows.forEach(row => {
+        const matches = !activeBenchFilter || row.dataset.benchFilters.split(" ").includes(activeBenchFilter);
+        row.classList.toggle("is-dimmed", !matches);
+        row.classList.toggle("is-highlighted", Boolean(activeBenchFilter) && matches);
+      });
+      const selectedButton = benchFilterButtons.find(button => button.dataset.benchFilter === activeBenchFilter);
+      benchFilterStatus.textContent = selectedButton
+        ? `${selectedButton.textContent.replace(/\s+/g, " ").trim()} highlighted. Other bench rows are dimmed.`
+        : "All bench rows are visible.";
+    }
+
+    benchFilterButtons.forEach(button => button.addEventListener("click", () => {
+      if (!button.disabled) applyBenchFilter(button.dataset.benchFilter);
+    }));
+
+    const summary = document.getElementById("summary-filters");
+    const filterButtons = [...summary.querySelectorAll("[data-filter]")];
+    const fieldCards = [...document.querySelectorAll(".position-card")];
+    const filterStatus = document.getElementById("filter-status");
+    let activeFilter = null;
+
+    for (const button of filterButtons) {
+      const count = starters.filter(player => player.state === button.dataset.filter).length;
+      button.querySelector(".starter-filter-count").textContent = count;
+      button.disabled = count === 0;
+      button.setAttribute("aria-disabled", String(count === 0));
+    }
+
+    function applyFilter(nextFilter) {
+      activeFilter = activeFilter === nextFilter ? null : nextFilter;
+      summary.classList.toggle("is-filtering", Boolean(activeFilter));
+      filterButtons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.filter === activeFilter)));
+      fieldCards.forEach(card => {
+        const matches = !activeFilter || card.dataset.state === activeFilter;
+        card.classList.toggle("is-dimmed", !matches);
+        card.classList.toggle("is-highlighted", Boolean(activeFilter) && matches);
+      });
+      const selectedButton = filterButtons.find(button => button.dataset.filter === activeFilter);
+      filterStatus.textContent = selectedButton
+        ? `${selectedButton.textContent.trim()} highlighted. Other Starting XV players are dimmed.`
+        : "All Starting XV players are visible.";
+    }
+
+    filterButtons.forEach(button => button.addEventListener("click", () => applyFilter(button.dataset.filter)));
+
+    const flashTimers = new WeakMap();
+
+    function flashPlayer(card) {
+      window.clearTimeout(flashTimers.get(card));
+      card.classList.remove("click-flash");
+      void card.offsetWidth;
+      card.classList.add("click-flash");
+      flashTimers.set(card, window.setTimeout(() => card.classList.remove("click-flash"), 940));
+    }
+
+    document.querySelectorAll(".position-card, .bench-row").forEach(card => {
+      card.addEventListener("click", () => flashPlayer(card));
+      card.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          flashPlayer(card);
+        }
+      });
+    });
+
+    const matchSelect = document.getElementById("match-select");
+    const releasedLineup = document.getElementById("released-lineup");
+    const unreleasedPanel = document.getElementById("unreleased-panel");
+    const deviceTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "your device timezone";
+    document.getElementById("fixture-timezone").textContent = `Kick-off times shown in ${deviceTimeZone.replaceAll("_", " ")}.`;
+
+    const dateFormatter = new Intl.DateTimeFormat(undefined, {day:"2-digit", month:"short", year:"numeric"});
+    const kickoffFormatter = new Intl.DateTimeFormat(undefined, {day:"2-digit", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit", timeZoneName:"short"});
+
+    function fixtureDate(fixture) {
+      return dateFormatter.format(new Date(fixture.kickoff));
+    }
+
+    function fixtureKickoff(fixture) {
+      return kickoffFormatter.format(new Date(fixture.kickoff));
+    }
+
+    const competitionGroups = new Map();
+    fixtures.forEach(fixture => {
+      if (!competitionGroups.has(fixture.competition)) competitionGroups.set(fixture.competition, []);
+      competitionGroups.get(fixture.competition).push(fixture);
+    });
+
+    competitionGroups.forEach((groupFixtures, competition) => {
+      const group = document.createElement("optgroup");
+      group.label = competition;
+      groupFixtures.forEach(fixture => {
+        const option = document.createElement("option");
+        option.value = fixture.id;
+        option.textContent = `${fixtureDate(fixture)} — ${fixture.team1} vs ${fixture.team2}${fixture.released ? " — team released" : ""}`;
+        group.appendChild(option);
+      });
+      matchSelect.appendChild(group);
+    });
+
+    function applyFixture(fixture, updateUrl = true) {
+      matchSelect.value = fixture.id;
+      releasedLineup.hidden = !fixture.released;
+      unreleasedPanel.hidden = fixture.released;
+
+      if (fixture.released) {
+        document.getElementById("page-title").textContent = `Last match → ${fixture.team2}`;
+        document.getElementById("page-subtitle").textContent = `The officially announced matchday 23 for ${fixture.venue}, mapped against the ${fixture.previousOpponent} selection. Each field card compares the same jersey number; the movement label follows this match’s player.`;
+        document.getElementById("match-label-1").textContent = "Previous";
+        document.getElementById("match-value-1").textContent = `${fixture.previousDate} · ${fixture.previousOpponent} · ${fixture.previousVenue}`;
+        document.getElementById("match-label-2").textContent = "Selected";
+        document.getElementById("match-value-2").textContent = `${fixtureDate(fixture)} · ${fixture.team2} · ${fixture.venue}`;
+        document.getElementById("match-label-3").textContent = "Kick-off";
+        document.getElementById("match-value-3").textContent = `${fixtureKickoff(fixture)} · Team released`;
+        document.getElementById("previous-bench-label").textContent = `${fixture.previousOpponent} bench`;
+        document.getElementById("current-bench-label").textContent = `${fixture.team2} bench`;
+        document.title = `All Blacks v ${fixture.team2} — Matchday 23`;
+      } else {
+        document.getElementById("page-title").textContent = `${fixture.team1} vs ${fixture.team2}`;
+        document.getElementById("page-subtitle").textContent = `${fixture.competition}. Select another match at any time; this page will show the comparison when the official team is available.`;
+        document.getElementById("match-label-1").textContent = "Status";
+        document.getElementById("match-value-1").textContent = "Upcoming · Team not released";
+        document.getElementById("match-label-2").textContent = "Kick-off";
+        document.getElementById("match-value-2").textContent = fixtureKickoff(fixture);
+        document.getElementById("match-label-3").textContent = "Venue";
+        document.getElementById("match-value-3").textContent = fixture.venue;
+        document.getElementById("unreleased-competition").textContent = fixture.competition;
+        document.getElementById("unreleased-teams").textContent = `${fixture.team1} vs ${fixture.team2}`;
+        document.getElementById("unreleased-venue").textContent = fixture.venue;
+        document.title = `${fixture.team1} v ${fixture.team2} — Team not released`;
+      }
+
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("match", fixture.id);
+        window.history.replaceState({}, "", url);
+      }
+    }
+
+    matchSelect.addEventListener("change", () => {
+      const fixture = fixtures.find(item => item.id === matchSelect.value) || fixtures[0];
+      applyFixture(fixture);
+    });
+
+    const requestedMatch = new URLSearchParams(window.location.search).get("match");
+    const initialFixture = fixtures.find(fixture => fixture.id === requestedMatch) || fixtures.find(fixture => fixture.released) || fixtures[0];
+    applyFixture(initialFixture, Boolean(requestedMatch));
+  </script>
+  <script src="data/matches.js"></script>
+  <script src="app.js?v=20260720-1"></script>
+</body>
+</html>
