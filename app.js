@@ -52,6 +52,18 @@
       .sort((a, b) => new Date(b.kickoff) - new Date(a.kickoff))[0] || null;
   }
 
+  function getLatestReleasedMatch() {
+    const chronologicalMatches = [...matches].sort((a, b) => new Date(a.kickoff) - new Date(b.kickoff));
+    const nearestUnreleasedMatch = chronologicalMatches.find(match => !Array.isArray(match.lineup) || match.lineup.length !== 23);
+    const releasedBeforeNextFixture = chronologicalMatches.filter(match => {
+      const hasReleasedLineup = Array.isArray(match.lineup) && match.lineup.length === 23;
+      return hasReleasedLineup && (!nearestUnreleasedMatch || new Date(match.kickoff) < new Date(nearestUnreleasedMatch.kickoff));
+    });
+    return releasedBeforeNextFixture.at(-1)
+      || chronologicalMatches.find(match => Array.isArray(match.lineup) && match.lineup.length === 23)
+      || chronologicalMatches[0];
+  }
+
   function injuryFor(match, playerId) {
     return (match.unavailable || []).find(player => player.id === playerId) || null;
   }
@@ -429,6 +441,6 @@
   });
   matchSelect.addEventListener("change", () => applyFixture(matches.find(match => match.id === matchSelect.value) || matches[0]));
   const requestedMatch = new URLSearchParams(window.location.search).get("match");
-  const initialMatch = matches.find(match => match.id === requestedMatch) || [...matches].reverse().find(match => match.lineup) || matches[0];
+  const initialMatch = matches.find(match => match.id === requestedMatch) || getLatestReleasedMatch();
   applyFixture(initialMatch, Boolean(requestedMatch));
 })();
