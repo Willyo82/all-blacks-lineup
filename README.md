@@ -4,7 +4,7 @@ A fan-built visual tracker for understanding how the All Blacks matchday 23 and 
 
 Built by [Willy (Willyo82)](https://github.com/Willyo82) and hosted on GitHub Pages.
 
-## Open the tracker
+## Open the tracker (BEST VIEWED BY CLICKING F11)
 
 - [Match Day team](https://willyo82.github.io/all-blacks-lineup/Match_Day.html)
 - [Current squad](https://willyo82.github.io/all-blacks-lineup/squad.html?squad=2026-current)
