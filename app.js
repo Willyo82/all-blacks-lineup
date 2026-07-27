@@ -23,6 +23,8 @@
 
   const positionByNumber = new Map(positionLayout.map(position => [position.n, position]));
   const matchSelect = document.getElementById("match-select");
+  const compareSelect = document.getElementById("compare-select");
+  const compareHelp = document.getElementById("compare-help");
   const releasedLineup = document.getElementById("released-lineup");
   const unreleasedPanel = document.getElementById("unreleased-panel");
   const availabilityStrip = document.getElementById("availability-strip");
@@ -46,10 +48,51 @@
     return kickoffFormatter.format(new Date(match.kickoff));
   }
 
-  function getPreviousReleasedMatch(match) {
+  function hasReleasedLineup(match) {
+    return Array.isArray(match?.lineup) && match.lineup.length === 23;
+  }
+
+  function getComparisonCandidates(match) {
     return matches
-      .filter(candidate => candidate.lineup && new Date(candidate.kickoff) < new Date(match.kickoff))
-      .sort((a, b) => new Date(b.kickoff) - new Date(a.kickoff))[0] || null;
+      .filter(candidate => hasReleasedLineup(candidate) && new Date(candidate.kickoff) < new Date(match.kickoff))
+      .sort((a, b) => new Date(b.kickoff) - new Date(a.kickoff));
+  }
+
+  function getPreviousReleasedMatch(match) {
+    return getComparisonCandidates(match)[0] || null;
+  }
+
+  function populateComparisonSelector(match, requestedComparisonId = null) {
+    compareSelect.innerHTML = "";
+    if (!hasReleasedLineup(match)) {
+      compareSelect.appendChild(new Option("Available when this team is released", ""));
+      compareSelect.disabled = true;
+      compareHelp.textContent = "Team not released";
+      return null;
+    }
+
+    const candidates = getComparisonCandidates(match);
+    if (!candidates.length) {
+      compareSelect.appendChild(new Option("No earlier released lineup", ""));
+      compareSelect.disabled = true;
+      compareHelp.textContent = "First tracked lineup";
+      return null;
+    }
+
+    candidates.forEach((candidate, index) => {
+      const option = new Option(
+        `${fixtureDate(candidate)} — ${candidate.opponent}${index === 0 ? " — latest earlier lineup" : ""}`,
+        candidate.id
+      );
+      compareSelect.appendChild(option);
+    });
+
+    const requestedMatch = candidates.find(candidate => candidate.id === requestedComparisonId);
+    const comparisonMatch = requestedMatch || candidates[0];
+    compareSelect.value = comparisonMatch.id;
+    compareSelect.disabled = false;
+    compareHelp.textContent = requestedMatch ? `Selected: ${comparisonMatch.opponent}` : "Defaults to latest earlier lineup";
+    return comparisonMatch;
   }
 
   function getLatestReleasedMatch() {
@@ -69,7 +112,11 @@
   }
 
   function playerMeta(player) {
-    const capText = player.debut && player.caps === 0 ? "Debutant" : `${player.caps ?? "—"} caps`;
+    const capText = player.debut && player.caps === 0
+      ? "Debutant"
+      : player.caps === 1
+        ? "1 cap"
+        : `${player.caps ?? "—"} caps`;
     return `${capText}${player.captain ? " · Captain" : ""}`;
   }
 
@@ -91,7 +138,7 @@
       const previousInjury = injuryFor(previousMatch, player.id);
       return { state: "new", status: previousInjury ? `Returned from injury · ${previousInjury.detail}` : "New to this week’s bench", benchFilter: "new-bench" };
     }
-    if (previousPlayer.n <= 15) return { state: "new", status: `Moved from Starting XV · #${previousPlayer.n}`, benchFilter: "new-bench" };
+    if (previousPlayer.n <= 15) return { state: "demoted", status: `Moved from Starting XV · #${previousPlayer.n}`, benchFilter: "new-bench" };
     if (previousPlayer.n === player.n) return { state: "retained", status: "Retained · same jersey", benchFilter: "retained-bench" };
     return { state: "shifted", status: `Retained on bench · from #${previousPlayer.n}`, benchFilter: "retained-bench" };
   }
@@ -252,7 +299,7 @@
       previousPlayer.setAttribute("role", "button");
       previousPlayer.setAttribute("tabindex", "0");
       previousPlayer.setAttribute("aria-pressed", "false");
-      previousPlayer.setAttribute("aria-label", `Highlight last week player ${previousPlayer.textContent.trim()}`);
+      previousPlayer.setAttribute("aria-label", `Highlight comparison player ${previousPlayer.textContent.trim()}`);
 
       const togglePreviousPlayer = event => {
         event.preventDefault();
@@ -262,7 +309,7 @@
         activePreviousCard = activePreviousCard === card ? null : card;
         flashPlayer(card);
         applyStarterHighlight(activePreviousCard
-          ? `${previousPlayer.textContent.trim()} from last week is highlighted. Other Starting XV players are dimmed.`
+          ? `${previousPlayer.textContent.trim()} from the comparison lineup is highlighted. Other Starting XV players are dimmed.`
           : null);
       };
 
@@ -302,12 +349,11 @@
     });
   }
 
-  function renderLineup(match) {
-    const previousMatch = getPreviousReleasedMatch(match);
+  function renderLineup(match, previousMatch) {
     const { starters, bench } = buildComparison(match, previousMatch);
     field.querySelectorAll(".position-card").forEach(card => card.remove());
     field.insertAdjacentHTML("beforeend", starters.map(player => `
-      <article class="position-card ${player.state}" data-state="${player.state}" data-previous-movement="${player.prevMovement || ""}" data-previous-injured="${Boolean(player.injury)}" role="button" tabindex="0" aria-label="Select ${player.name}, jersey ${player.n}" style="left:${player.x}%;top:${player.y}%">
+      <article class="position-card ${player.state}${player.caps === 0 ? " new-cap" : ""}" data-state="${player.state}" data-cap-status="${player.caps === 0 ? "uncapped" : "capped"}" data-previous-movement="${player.prevMovement || ""}" data-previous-injured="${Boolean(player.injury)}" role="button" tabindex="0" aria-label="Select ${player.name}, jersey ${player.n}" style="left:${player.x}%;top:${player.y}%">
         <div class="position-kicker"><span>#${player.n}</span><span>${player.p}</span></div>
         <div class="comparison">
           <div class="previous"><span class="previous-label">${previousMatch ? previousMatch.opponent : "Previous"}</span>${previousStatus(player)}</div>
@@ -321,7 +367,7 @@
 
     benchContainer.innerHTML = bench.map(player => {
       const filters = [player.benchFilter, player.prevMovement === "start" ? "promoted-start" : "", player.prevMovement === "out" ? "dropped-out" : "", player.injury ? "injured" : ""].filter(Boolean).join(" ");
-      return `<div class="bench-row ${player.state}" data-bench-filters="${filters}" role="button" tabindex="0" aria-label="Select ${player.name}, bench jersey ${player.n}">
+      return `<div class="bench-row ${player.state}${player.caps === 0 ? " new-cap" : ""}" data-cap-status="${player.caps === 0 ? "uncapped" : "capped"}" data-bench-filters="${filters}" role="button" tabindex="0" aria-label="Select ${player.name}, bench jersey ${player.n}">
         <div class="bench-number">${player.n}<small>Bench</small></div>
         <div class="bench-previous">${previousStatus(player)}</div>
         <div class="bench-arrow">→</div>
@@ -368,9 +414,9 @@
     });
   }
 
-  function applyFixture(match, updateUrl = true) {
-    const hasLineup = Array.isArray(match.lineup) && match.lineup.length === 23;
-    const previousMatch = hasLineup ? getPreviousReleasedMatch(match) : null;
+  function applyFixture(match, updateUrl = true, requestedComparisonId = null) {
+    const hasLineup = hasReleasedLineup(match);
+    const previousMatch = populateComparisonSelector(match, requestedComparisonId);
     matchSelect.value = match.id;
     releasedLineup.hidden = !hasLineup;
     unreleasedPanel.hidden = hasLineup;
@@ -379,18 +425,18 @@
     availabilityStrip.hidden = !hasLineup || !(match.unavailable || []).length;
 
     if (hasLineup) {
-      renderLineup(match);
+      renderLineup(match, previousMatch);
       const comparisonTitle = previousMatch ? `${previousMatch.opponent} → ${match.opponent}` : `All Blacks vs ${match.opponent}`;
       document.getElementById("page-title").textContent = comparisonTitle;
       document.getElementById("page-subtitle").textContent = previousMatch
-        ? `${match.status === "completed" ? "Completed" : "Announced"} matchday 23 for ${match.venue}, automatically compared with the previous released team against ${previousMatch.opponent}.`
+        ? `${match.status === "completed" ? "Completed" : "Announced"} matchday 23 for ${match.venue}, compared with the selected released team against ${previousMatch.opponent}.`
         : `The first released matchday 23 in this tracker. Movement comparisons begin with the next released fixture.`;
 
       if (match.status === "completed" && match.score) {
         document.getElementById("match-label-1").textContent = "Result";
         document.getElementById("match-value-1").textContent = `All Blacks ${match.score.allBlacks}–${match.score.opponent} ${match.opponent}`;
       } else {
-        document.getElementById("match-label-1").textContent = "Previous";
+        document.getElementById("match-label-1").textContent = "Compared with";
         document.getElementById("match-value-1").textContent = previousMatch ? `${fixtureDate(previousMatch)} · ${previousMatch.opponent}` : "No previous tracked match";
       }
       document.getElementById("match-label-2").textContent = match.status === "completed" ? "Match" : "Selected";
@@ -399,7 +445,7 @@
       document.getElementById("match-value-3").textContent = `${fixtureKickoff(match)} · ${match.status === "completed" ? "Completed" : "Team released"}`;
       availabilityPlayers.textContent = (match.unavailable || []).map(player => `${player.name} — ${player.detail}`).join(" · ");
       document.title = `All Blacks v ${match.opponent} — Matchday 23`;
-      document.getElementById("footer-status-copy").textContent = `Portraits are official All Blacks profile images served with this site. Selection movement is calculated automatically from ${previousMatch?.opponent || "the first tracked match"} to ${match.opponent}.`;
+      document.getElementById("footer-status-copy").textContent = `Portraits are official All Blacks profile images served with this site. Selection movement is calculated from the selected ${previousMatch?.opponent || "first tracked"} lineup to ${match.opponent}.`;
       document.getElementById("footer-source-links").innerHTML = `Sources: <a href="${match.sourceUrl}">official ${match.opponent} team announcement</a> · <a href="https://www.allblacks.com/team/all-blacks/fixtures">official fixtures</a> · <a href="https://www.allblacks.com/team/all-blacks/squad">current squad</a>`;
     } else {
       document.getElementById("page-title").textContent = `${match.team1} vs ${match.team2}`;
@@ -416,11 +462,13 @@
       document.title = `${match.team1} v ${match.team2} — Team not released`;
     }
 
-    if (updateUrl) {
-      const url = new URL(window.location.href);
-      url.searchParams.set("match", match.id);
-      window.history.replaceState({}, "", url);
-    }
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("match", match.id);
+        if (previousMatch) url.searchParams.set("compare", previousMatch.id);
+        else url.searchParams.delete("compare");
+        window.history.replaceState({}, "", url);
+      }
   }
 
   populateFixtureSelector();
@@ -440,7 +488,13 @@
     window.setTimeout(() => benchJump.classList.remove("is-jumping"), 720);
   });
   matchSelect.addEventListener("change", () => applyFixture(matches.find(match => match.id === matchSelect.value) || matches[0]));
-  const requestedMatch = new URLSearchParams(window.location.search).get("match");
+  compareSelect.addEventListener("change", () => {
+    const selectedMatch = matches.find(match => match.id === matchSelect.value) || matches[0];
+    applyFixture(selectedMatch, true, compareSelect.value);
+  });
+  const initialParams = new URLSearchParams(window.location.search);
+  const requestedMatch = initialParams.get("match");
+  const requestedComparison = initialParams.get("compare");
   const initialMatch = matches.find(match => match.id === requestedMatch) || getLatestReleasedMatch();
-  applyFixture(initialMatch, Boolean(requestedMatch));
+  applyFixture(initialMatch, Boolean(requestedMatch || requestedComparison), requestedComparison);
 })();
