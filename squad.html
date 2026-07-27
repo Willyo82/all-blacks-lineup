@@ -125,6 +125,7 @@
     .change-stats span { min-width: 82px; padding: 10px 13px; border: 1px solid rgba(255,255,255,.1); border-radius: 12px; color: #8e9991; font-size: 9px; font-weight: 900; text-align: center; text-transform: uppercase; }
     .change-stats b { display: block; margin-bottom: 3px; color: #fff; font-size: 22px; }
     .change-stats .added b { color: var(--lime); }
+    .change-stats .uncapped b { color: #f4c84d; }
     .change-stats .removed b { color: var(--red); }
     .removed-list { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 8px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,.08); }
     .removed-list h3 { grid-column: 1 / -1; margin: 0 0 4px; color: #ff8b88; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
@@ -212,7 +213,7 @@
     .image-missing .portrait { display: none; }
     .image-missing .portrait-fallback { display: grid; }
     .captain-badge { position: absolute; left: 7px; bottom: 7px; display: grid; width: 24px; height: 24px; place-items: center; border-radius: 999px; background: var(--lime); color: #071009; font-size: 11px; font-weight: 1000; box-shadow: 0 0 18px rgba(217,255,67,.42); }
-    .uncapped-badge { position: absolute; top: 7px; left: 7px; padding: 5px 7px 4px; border: 1px solid rgba(255,255,255,.44); border-radius: 999px; background: #f4c84d; color: #171203; font-size: 7px; font-weight: 1000; letter-spacing: .08em; line-height: 1; text-transform: uppercase; box-shadow: 0 3px 14px rgba(0,0,0,.42); }
+    .uncapped-badge { position: absolute; right: 6px; bottom: 6px; padding: 3px 5px 2px; border: 1px solid rgba(255,255,255,.4); border-radius: 999px; background: #f4c84d; color: #171203; font-size: 6px; font-weight: 1000; letter-spacing: .06em; line-height: 1; text-transform: uppercase; box-shadow: 0 3px 12px rgba(0,0,0,.42); }
     .player-copy { display: flex; min-width: 0; padding: 13px 12px; flex-direction: column; justify-content: center; }
     .movement-label { margin-bottom: 6px; color: #657068; font-size: 7px; font-weight: 1000; letter-spacing: .09em; text-transform: uppercase; }
     .new .movement-label { color: var(--lime); }
@@ -313,6 +314,6 @@
 
   <a class="site-watermark" href="https://www.youtube.com/@RugbyFromTheStands" tabindex="-1" aria-hidden="true">Rugby From The Stands</a>
   <script src="data/squads.js"></script>
-  <script src="squad.js?v=20260727-uncapped"></script>
+  <script src="squad.js?v=20260727-new-cap-summary"></script>
 </body>
 </html>
