@@ -28,6 +28,8 @@
 
   function playerCard(player, movement) {
     const movementLabel = movement === "new" ? "New for this squad" : movement === "retained" ? "Retained" : "Current squad";
+    const playerNumber = player.number ? `#${player.number}` : "Uncapped";
+    const capSummary = Number.isInteger(player.caps) ? ` · ${player.caps} ${player.caps === 1 ? "cap" : "caps"}` : "";
     return `<article class="player-card ${movement}" data-unit="${player.unit}" data-movement="${movement}" role="button" tabindex="0" aria-label="Select ${player.name}">
       <div class="portrait-wrap">
         <img class="portrait" src="${photoRoot}${player.id}.png" alt="${player.name}" />
@@ -38,16 +40,18 @@
         <span class="movement-label">${movementLabel}</span>
         <h3>${player.name}</h3>
         <p>${player.role}</p>
-        <strong>#${player.number}</strong>
+        <strong>${playerNumber}${capSummary}</strong>
       </div>
     </article>`;
   }
 
-  function removedCard(player) {
-    return `<div class="removed-player">
+  function removedCard(player, unavailableById) {
+    const unavailable = unavailableById.get(player.id);
+    const status = unavailable ? `<b aria-label="Unavailable due to injury">✚ Injury</b>` : "<b>Not selected</b>";
+    return `<div class="removed-player${unavailable ? " injured" : ""}">
       <img src="${photoRoot}${player.id}.png" alt="${player.name}" />
       <div><strong>${player.name}</strong><span>${player.role} · #${player.number}</span></div>
-      <b>Not selected</b>
+      ${status}
     </div>`;
   }
 
@@ -102,9 +106,12 @@
       return;
     }
 
-    changePanel.innerHTML = `<div><span class="eyebrow">Changes from ${previousSquad.shortLabel}</span><h2>${additions.length} added · ${removed.length} not selected</h2><p>${retainedCount} players remain from the previous squad. New touring selections use a green marker.</p></div>
-      <div class="change-stats"><span><b>${squad.players.length}</b> selected</span><span class="added"><b>${additions.length}</b> added</span><span class="removed"><b>${removed.length}</b> removed</span></div>
-      ${removed.length ? `<div class="removed-list"><h3>Not selected from the previous squad</h3>${removed.map(removedCard).join("")}</div>` : ""}`;
+    const unavailableById = new Map((squad.unavailable || []).map(player => [player.id, player]));
+    const injuryCount = removed.filter(player => unavailableById.has(player.id)).length;
+    const selectionRemovalCount = removed.length - injuryCount;
+    changePanel.innerHTML = `<div><span class="eyebrow">Changes from ${previousSquad.shortLabel}</span><h2>${additions.length} added · ${removed.length} out</h2><p>${retainedCount} players remain from the previous squad. ${injuryCount} ${injuryCount === 1 ? "player is" : "players are"} unavailable through injury and ${selectionRemovalCount} ${selectionRemovalCount === 1 ? "was" : "were"} not selected.</p></div>
+      <div class="change-stats"><span><b>${squad.players.length}</b> selected</span><span class="added"><b>${additions.length}</b> added</span><span class="removed"><b>${removed.length}</b> out</span></div>
+      ${removed.length ? `<div class="removed-list"><h3>Unavailable or not selected from the previous squad</h3>${removed.map(player => removedCard(player, unavailableById)).join("")}</div>` : ""}`;
   }
 
   function renderReleasedSquad(squad) {
@@ -120,7 +127,7 @@
       ? `Touring squad compared automatically with the ${previousSquad.label.toLowerCase()}.`
       : "The current All Blacks squad arranged by playing unit, ready to compare with the South Africa touring squad.";
     document.getElementById("squad-total").textContent = squad.players.length;
-    document.getElementById("squad-status").textContent = previousSquad ? `${additions.length} additions · ${removed.length} removed` : "Comparison baseline";
+    document.getElementById("squad-status").textContent = previousSquad ? `${additions.length} additions · ${removed.length} out` : "Comparison baseline";
 
     unitFilters.innerHTML = units.map(unit => {
       const count = squad.players.filter(player => player.unit === unit.id).length;
@@ -169,5 +176,6 @@
   squadSelect.innerHTML = squads.map(squad => `<option value="${squad.id}">${squad.label}${squad.status === "upcoming" ? " — not released" : ""}</option>`).join("");
   squadSelect.addEventListener("change", () => applySquad(squads.find(squad => squad.id === squadSelect.value) || squads[0]));
   const requestedSquad = new URLSearchParams(window.location.search).get("squad");
-  applySquad(squads.find(squad => squad.id === requestedSquad) || squads[0]);
+  const latestReleasedSquad = [...squads].reverse().find(squad => squad.status === "released" && Array.isArray(squad.players));
+  applySquad(squads.find(squad => squad.id === requestedSquad) || latestReleasedSquad || squads[0]);
 })();

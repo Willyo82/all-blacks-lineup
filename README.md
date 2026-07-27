@@ -7,7 +7,7 @@ Built by [Willy (Willyo82)](https://github.com/Willyo82) and hosted on GitHub Pa
 ## Open the tracker (BEST VIEWED BY CLICKING F11)
 
 - [Match Day team](https://willyo82.github.io/all-blacks-lineup/Match_Day.html)
-- [Current squad](https://willyo82.github.io/all-blacks-lineup/squad.html?squad=2026-current)
+- [Latest squad](https://willyo82.github.io/all-blacks-lineup/squad.html)
 
 The Match Day view compares each selected team with the previous released lineup, making retained players, positional moves, bench promotions, injuries and players leaving the 23 easy to see. The Squad view groups the wider squad by playing unit and is ready to highlight changes when touring squads are announced.
 
