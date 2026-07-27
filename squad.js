@@ -30,11 +30,13 @@
     const movementLabel = movement === "new" ? "New for this squad" : movement === "retained" ? "Retained" : "Current squad";
     const playerNumber = player.number ? `#${player.number}` : "Uncapped";
     const capSummary = Number.isInteger(player.caps) ? ` · ${player.caps} ${player.caps === 1 ? "cap" : "caps"}` : "";
-    return `<article class="player-card ${movement}" data-unit="${player.unit}" data-movement="${movement}" role="button" tabindex="0" aria-label="Select ${player.name}">
+    const isUncapped = player.caps === 0;
+    return `<article class="player-card ${movement}${isUncapped ? " uncapped" : ""}" data-unit="${player.unit}" data-movement="${movement}" data-cap-status="${isUncapped ? "uncapped" : "capped"}" role="button" tabindex="0" aria-label="Select ${player.name}">
       <div class="portrait-wrap">
         <img class="portrait" src="${photoRoot}${player.id}.png" alt="${player.name}" />
         <span class="portrait-fallback" aria-hidden="true">${initials(player.name)}</span>
         ${player.captain ? '<span class="captain-badge">C</span>' : ""}
+        ${isUncapped ? '<span class="uncapped-badge">Uncapped</span>' : ""}
       </div>
       <div class="player-copy">
         <span class="movement-label">${movementLabel}</span>
@@ -121,13 +123,14 @@
     const additions = previousSquad ? squad.players.filter(player => !previousIds.has(player.id)) : [];
     const removed = previousSquad ? previousSquad.players.filter(player => !currentIds.has(player.id)) : [];
     const retainedCount = squad.players.length - additions.length;
+    const uncappedCount = squad.players.filter(player => player.caps === 0).length;
 
     document.getElementById("page-title").textContent = squad.label;
     document.getElementById("page-subtitle").textContent = previousSquad
       ? `Touring squad compared automatically with the ${previousSquad.label.toLowerCase()}.`
       : "The current All Blacks squad arranged by playing unit, ready to compare with the South Africa touring squad.";
     document.getElementById("squad-total").textContent = squad.players.length;
-    document.getElementById("squad-status").textContent = previousSquad ? `${additions.length} additions · ${removed.length} out` : "Comparison baseline";
+    document.getElementById("squad-status").textContent = previousSquad ? `${additions.length} additions · ${uncappedCount} uncapped · ${removed.length} out` : "Comparison baseline";
 
     unitFilters.innerHTML = units.map(unit => {
       const count = squad.players.filter(player => player.unit === unit.id).length;
@@ -136,9 +139,15 @@
 
     unitSections.innerHTML = units.map(unit => {
       const players = squad.players.filter(player => player.unit === unit.id);
+      const orderedPlayers = previousSquad
+        ? [
+            ...players.filter(player => previousIds.has(player.id)),
+            ...players.filter(player => !previousIds.has(player.id))
+          ]
+        : players;
       return `<section class="unit-section" data-unit="${unit.id}" data-unit-section="${unit.id}" style="--unit-accent:${unit.accent}">
         <header class="unit-heading"><div><span class="unit-number">${unit.numbers}</span><h2>${unit.name}</h2><p>${unit.description}</p></div><strong>${players.length}<small>players</small></strong></header>
-        <div class="player-grid">${players.map(player => playerCard(player, previousSquad ? (previousIds.has(player.id) ? "retained" : "new") : "baseline")).join("")}</div>
+        <div class="player-grid">${orderedPlayers.map(player => playerCard(player, previousSquad ? (previousIds.has(player.id) ? "retained" : "new") : "baseline")).join("")}</div>
       </section>`;
     }).join("");
 
