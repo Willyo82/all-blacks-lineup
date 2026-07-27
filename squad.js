@@ -101,7 +101,7 @@
     });
   }
 
-  function renderChangePanel(squad, previousSquad, additions, removed, retainedCount) {
+  function renderChangePanel(squad, previousSquad, additions, removed, retainedCount, uncappedCount) {
     if (!previousSquad) {
       changePanel.innerHTML = `<div><span class="eyebrow">Comparison baseline</span><h2>Current 2026 squad</h2><p>This is the 38-player starting point. When the South Africa touring squad is entered, changes will be calculated automatically.</p></div>
         <div class="change-stats"><span><b>${squad.players.length}</b> current</span><span class="added"><b>0</b> added</span><span class="removed"><b>0</b> removed</span></div>`;
@@ -112,7 +112,7 @@
     const injuryCount = removed.filter(player => unavailableById.has(player.id)).length;
     const selectionRemovalCount = removed.length - injuryCount;
     changePanel.innerHTML = `<div><span class="eyebrow">Changes from ${previousSquad.shortLabel}</span><h2>${additions.length} added · ${removed.length} out</h2><p>${retainedCount} players remain from the previous squad. ${injuryCount} ${injuryCount === 1 ? "player is" : "players are"} unavailable through injury and ${selectionRemovalCount} ${selectionRemovalCount === 1 ? "was" : "were"} not selected.</p></div>
-      <div class="change-stats"><span><b>${squad.players.length}</b> selected</span><span class="added"><b>${additions.length}</b> added</span><span class="removed"><b>${removed.length}</b> out</span></div>
+      <div class="change-stats"><span><b>${squad.players.length}</b> selected</span><span class="added"><b>${additions.length}</b> added</span><span class="uncapped"><b>${uncappedCount}</b> new caps</span><span class="removed"><b>${removed.length}</b> out</span></div>
       ${removed.length ? `<div class="removed-list"><h3>Unavailable or not selected from the previous squad</h3>${removed.map(player => removedCard(player, unavailableById)).join("")}</div>` : ""}`;
   }
 
@@ -151,7 +151,7 @@
       </section>`;
     }).join("");
 
-    renderChangePanel(squad, previousSquad, additions, removed, retainedCount);
+    renderChangePanel(squad, previousSquad, additions, removed, retainedCount, uncappedCount);
     configureUnitFilters();
     activateCards();
   }
