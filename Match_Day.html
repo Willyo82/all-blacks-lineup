@@ -12,6 +12,8 @@
       --line: rgba(255,255,255,.56);
       --lime: #d9ff43;
       --amber: #ffbf47;
+      --orange: #ff6b1a;
+      --move-blue: #60d9ff;
       --violet: #ba9cff;
       --green-1: #123d24;
       --green-2: #1c5530;
@@ -68,7 +70,7 @@
 
     .fixture-picker {
       display: grid;
-      grid-template-columns: minmax(180px, 260px) minmax(320px, 1fr) auto;
+      grid-template-columns: minmax(180px, 240px) minmax(520px, 1fr) auto;
       gap: 14px;
       align-items: center;
       margin-bottom: 30px;
@@ -106,7 +108,34 @@
       transform: translateY(-52%);
     }
 
-    #match-select {
+    .fixture-controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .fixture-control label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0 2px 6px;
+      color: #dfe5e1;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .fixture-control label small {
+      color: #778179;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    #match-select,
+    #compare-select {
       width: 100%;
       min-height: 48px;
       appearance: none;
@@ -119,9 +148,16 @@
       cursor: pointer;
     }
 
-    #match-select:focus-visible {
+    #match-select:focus-visible,
+    #compare-select:focus-visible {
       outline: 2px solid var(--lime);
       outline-offset: 3px;
+    }
+
+    #compare-select:disabled {
+      color: #7d8780;
+      cursor: not-allowed;
+      opacity: .72;
     }
 
     .fixture-timezone {
@@ -347,10 +383,10 @@
     }
     .summary-chip.retained { --chip-accent: #dce3de; }
     .summary-chip.promoted { --chip-accent: var(--lime); }
-    .summary-chip.moved { --chip-accent: var(--amber); }
+    .summary-chip.moved { --chip-accent: var(--move-blue); }
     .summary-chip.new { --chip-accent: var(--violet); }
     .summary-chip.promoted i { background: var(--lime); }
-    .summary-chip.moved i { background: var(--amber); }
+    .summary-chip.moved i { background: var(--move-blue); }
     .summary-chip.new i { background: var(--violet); }
 
     .previous-status-key {
@@ -553,7 +589,7 @@
     }
 
     .position-card.promoted { border-color: rgba(217,255,67,.88); }
-    .position-card.moved { border-color: rgba(255,191,71,.9); }
+    .position-card.moved { border-color: rgba(96,217,255,.9); }
     .position-card.new { border-color: rgba(186,156,255,.92); }
 
     .position-kicker {
@@ -695,8 +731,13 @@
       text-transform: uppercase;
     }
     .promoted .status { color: var(--lime); }
-    .moved .status { color: var(--amber); }
+    .moved .status { color: var(--move-blue); }
     .new .status { color: var(--violet); }
+    .position-card.new-cap {
+      border-color: #f4c84d;
+      box-shadow: 0 0 0 2px rgba(244,200,77,.22), 0 12px 28px rgba(0,0,0,.35);
+    }
+    .new-cap .selection-meta { color: #f4c84d; }
 
     .legend {
       position: absolute;
@@ -724,7 +765,7 @@
       background: #738078;
     }
     .legend .p::before { background: var(--lime); }
-    .legend .m::before { background: var(--amber); }
+    .legend .m::before { background: var(--move-blue); }
     .legend .n::before { background: var(--violet); }
 
     .bench-section {
@@ -853,7 +894,11 @@
       transition: opacity .26s ease, filter .26s ease, transform .26s ease, box-shadow .26s ease;
     }
     .bench-row.new { border-color: rgba(186,156,255,.5); }
-    .bench-row.shifted { border-color: rgba(255,191,71,.42); }
+    .bench-row.demoted { border-color: rgba(186,156,255,.5); }
+    .bench-row.new-cap {
+      border: 2px solid #f4c84d;
+      box-shadow: 0 0 0 1px rgba(244,200,77,.18), 0 0 24px rgba(244,200,77,.12);
+    }
     .bench-row.is-dimmed {
       opacity: .16;
       filter: grayscale(1) saturate(.15);
@@ -918,7 +963,10 @@
       text-transform: uppercase;
     }
     .bench-row.new .bench-current span { color: var(--violet); }
-    .bench-row.shifted .bench-current span { color: var(--amber); }
+    .bench-row.demoted .bench-current span {
+      color: var(--orange);
+      font-weight: 500;
+    }
 
     .position-card.click-flash,
     .bench-row.click-flash {
@@ -1013,6 +1061,9 @@
       .bench-heading-meta { align-items: flex-start; }
       .bench-filter-panel { grid-template-columns: 1fr; }
     }
+    @media (max-width: 680px) {
+      .fixture-controls { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -1024,11 +1075,22 @@
 
     <section class="fixture-picker" aria-label="Choose an All Blacks match">
       <div class="fixture-picker-copy">
-        <strong>Select match</strong>
-        <span>Released lineups and upcoming fixtures</span>
+        <strong>Choose your comparison</strong>
+        <span>Select the team to display, then choose which earlier released lineup to compare it with.</span>
       </div>
-      <div class="fixture-select-wrap">
-        <select id="match-select" aria-label="Select match"></select>
+      <div class="fixture-controls">
+        <div class="fixture-control">
+          <label for="match-select"><span>Match to display</span></label>
+          <div class="fixture-select-wrap">
+            <select id="match-select" aria-label="Select match to display"></select>
+          </div>
+        </div>
+        <div class="fixture-control">
+          <label for="compare-select"><span>Compare against</span><small id="compare-help">Previous released lineup</small></label>
+          <div class="fixture-select-wrap">
+            <select id="compare-select" aria-label="Select earlier match to compare against"></select>
+          </div>
+        </div>
       </div>
       <p class="fixture-timezone" id="fixture-timezone">Kick-off times use your device timezone.</p>
     </section>
@@ -1071,8 +1133,8 @@
       <span class="sr-only" id="filter-status" aria-live="polite">All Starting XV players are visible.</span>
     </div>
 
-    <div class="previous-status-key" id="previous-status-filters" aria-label="Filter the Starting XV by last-week player outcome">
-      <strong>Last-week player</strong>
+    <div class="previous-status-key" id="previous-status-filters" aria-label="Filter the Starting XV by comparison-player outcome">
+      <strong>Comparison player</strong>
       <button class="key-item" type="button" data-previous-filter="out" aria-pressed="false"><b class="previous-movement-icon out" aria-hidden="true">↓</b> Dropped out of the 23</button>
       <button class="key-item" type="button" data-previous-filter="bench" aria-pressed="false"><b class="previous-movement-icon bench" aria-hidden="true">↓</b> Dropped to the bench</button>
       <button class="key-item" type="button" data-previous-filter="promoted" aria-pressed="false"><b class="previous-movement-icon start" aria-hidden="true">↑</b> Promoted to Starting XV</button>
@@ -1115,7 +1177,7 @@
           <button class="summary-chip bench-filter-chip new-bench" type="button" data-bench-filter="new-bench" aria-pressed="false"><i></i><span class="bench-filter-count">5</span> new to bench</button>
           <button class="summary-chip bench-filter-chip retained-bench" type="button" data-bench-filter="retained-bench" aria-pressed="false"><i></i><span class="bench-filter-count">3</span> retained on bench</button>
         </div>
-        <div class="bench-filter-label">Last week’s bench outcomes</div>
+        <div class="bench-filter-label">Comparison bench outcomes</div>
         <div class="bench-filter-row">
           <button class="summary-chip bench-filter-chip promoted-start" type="button" data-bench-filter="promoted-start" aria-pressed="false"><i></i><span class="previous-movement-icon start" aria-hidden="true">↑</span><span class="bench-filter-count">2</span> promoted to XV</button>
           <button class="summary-chip bench-filter-chip dropped-out" type="button" data-bench-filter="dropped-out" aria-pressed="false"><i></i><span class="previous-movement-icon out" aria-hidden="true">↓</span><span class="bench-filter-count">3</span> dropped out of 23</button>
@@ -1406,6 +1468,6 @@
     applyFixture(initialFixture, Boolean(requestedMatch));
   </script>
   <script src="data/matches.js"></script>
-  <script src="app.js?v=20260720-1"></script>
+  <script src="app.js?v=20260727-compare-select-2"></script>
 </body>
 </html>
