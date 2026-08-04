@@ -49,7 +49,9 @@
 
   function removedCard(player, unavailableById) {
     const unavailable = unavailableById.get(player.id);
-    const status = unavailable ? `<b aria-label="Unavailable due to injury">✚ Injury</b>` : "<b>Not selected</b>";
+    const status = unavailable
+      ? `<div class="removed-status"><b aria-label="Unavailable due to injury: ${unavailable.detail || "Injury"}">✚ ${unavailable.detail || "Injury"}</b>${unavailable.updated ? `<small>Updated ${unavailable.updated}</small>` : ""}</div>`
+      : '<div class="removed-status"><b>Not selected</b></div>';
     return `<div class="removed-player${unavailable ? " injured" : ""}">
       <img src="${photoRoot}${player.id}.png" alt="${player.name}" />
       <div><strong>${player.name}</strong><span>${player.role} · #${player.number}</span></div>
@@ -111,7 +113,8 @@
     const unavailableById = new Map((squad.unavailable || []).map(player => [player.id, player]));
     const injuryCount = removed.filter(player => unavailableById.has(player.id)).length;
     const selectionRemovalCount = removed.length - injuryCount;
-    changePanel.innerHTML = `<div><span class="eyebrow">Changes from ${previousSquad.shortLabel}</span><h2>${additions.length} added · ${removed.length} out</h2><p>${retainedCount} players remain from the previous squad. ${injuryCount} ${injuryCount === 1 ? "player is" : "players are"} unavailable through injury and ${selectionRemovalCount} ${selectionRemovalCount === 1 ? "was" : "were"} not selected.</p></div>
+    const selectionRemovalCopy = selectionRemovalCount === 1 ? "1 player was not selected" : `${selectionRemovalCount} players were not selected`;
+    changePanel.innerHTML = `<div><span class="eyebrow">Changes from ${previousSquad.shortLabel}</span><h2>${additions.length} added · ${removed.length} out</h2><p>${retainedCount} players remain from the previous squad. ${injuryCount} ${injuryCount === 1 ? "player is" : "players are"} unavailable through injury and ${selectionRemovalCopy}.</p></div>
       <div class="change-stats"><span><b>${squad.players.length}</b> selected</span><span class="added"><b>${additions.length}</b> added</span><span class="uncapped"><b>${uncappedCount}</b> new caps</span><span class="removed"><b>${removed.length}</b> out</span></div>
       ${removed.length ? `<div class="removed-list"><h3>Unavailable or not selected from the previous squad</h3>${removed.map(player => removedCard(player, unavailableById)).join("")}</div>` : ""}`;
   }
@@ -121,7 +124,10 @@
     const previousIds = new Set((previousSquad?.players || []).map(player => player.id));
     const currentIds = new Set(squad.players.map(player => player.id));
     const additions = previousSquad ? squad.players.filter(player => !previousIds.has(player.id)) : [];
-    const removed = previousSquad ? previousSquad.players.filter(player => !currentIds.has(player.id)) : [];
+    const removedFromPrevious = previousSquad ? previousSquad.players.filter(player => !currentIds.has(player.id)) : [];
+    const removedIds = new Set(removedFromPrevious.map(player => player.id));
+    const additionalDepartures = (squad.departures || []).filter(player => !removedIds.has(player.id));
+    const removed = [...removedFromPrevious, ...additionalDepartures];
     const retainedCount = squad.players.length - additions.length;
     const uncappedCount = squad.players.filter(player => player.caps === 0).length;
 
@@ -130,7 +136,7 @@
       ? `Touring squad compared automatically with the ${previousSquad.label.toLowerCase()}.`
       : "The current All Blacks squad arranged by playing unit, ready to compare with the South Africa touring squad.";
     document.getElementById("squad-total").textContent = squad.players.length;
-    document.getElementById("squad-status").textContent = previousSquad ? `${additions.length} additions · ${uncappedCount} uncapped · ${removed.length} out` : "Comparison baseline";
+    document.getElementById("squad-status").textContent = previousSquad ? `${additions.length} ${additions.length === 1 ? "addition" : "additions"} · ${uncappedCount} uncapped · ${removed.length} out` : "Comparison baseline";
 
     unitFilters.innerHTML = units.map(unit => {
       const count = squad.players.filter(player => player.unit === unit.id).length;
