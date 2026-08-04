@@ -64,13 +64,16 @@ window.ALL_BLACKS_SQUADS = [
     unavailable: [
       { id: "tamaiti-williams", detail: "Injury" },
       { id: "scott-barrett", detail: "Injury" },
-      { id: "leicester-faingaanuku", detail: "Injury" }
+      { id: "leicester-faingaanuku", detail: "Injury" },
+      { id: "george-bell", detail: "Calf strain · 4–6 weeks", updated: "04/08/2026" }
+    ],
+    departures: [
+      { id: "george-bell", name: "George Bell", number: 1217, unit: "front-row", role: "Hooker", caps: 4 }
     ],
     players: [
       { id: "asafo-aumua", name: "Asafo Aumua", number: 1163, unit: "front-row", role: "Hooker", caps: 22 },
       { id: "codie-taylor", name: "Codie Taylor", number: 1143, unit: "front-row", role: "Hooker", caps: 109 },
       { id: "samisoni-taukeiaho", name: "Samisoni Taukei’aho", number: 1198, unit: "front-row", role: "Hooker", caps: 44 },
-      { id: "george-bell", name: "George Bell", number: 1217, unit: "front-row", role: "Hooker", caps: 4 },
       { id: "ethan-de-groot", name: "Ethan de Groot", number: 1197, unit: "front-row", role: "Loosehead prop", caps: 43 },
       { id: "george-bower", name: "George Bower", number: 1194, unit: "front-row", role: "Loosehead prop", caps: 26 },
       { id: "xavier-numia", name: "Xavier Numia", number: 1233, unit: "front-row", role: "Loosehead prop", caps: 2 },
@@ -79,6 +82,7 @@ window.ALL_BLACKS_SQUADS = [
       { id: "fletcher-newell", name: "Fletcher Newell", number: 1205, unit: "front-row", role: "Tighthead prop", caps: 37 },
       { id: "pasilio-tosi", name: "Pasilio Tosi", number: 1219, unit: "front-row", role: "Prop", caps: 17 },
       { id: "siale-lauaki", name: "Siale Lauaki", number: null, unit: "front-row", role: "Prop", caps: 0, debut: true },
+      { id: "bradley-slater", name: "Bradley Slater", number: null, unit: "front-row", role: "Hooker", caps: 0, debut: true },
 
       { id: "tupou-vaai", name: "Tupou Vaa’i", number: 1188, unit: "locks", role: "Lock", caps: 47 },
       { id: "patrick-tuipulotu", name: "Patrick Tuipulotu", number: 1133, unit: "locks", role: "Lock", caps: 57 },
