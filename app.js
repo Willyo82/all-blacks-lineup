@@ -112,12 +112,18 @@
   }
 
   function playerMeta(player) {
+    if (player.firstAppearance) return `First All Blacks appearance${player.captain ? " · Captain" : ""}`;
+
+    const hasNonTestRecord = Number.isInteger(player.nonTestGames);
     const capText = player.debut && player.caps === 0
       ? "Debutant"
       : player.caps === 1
-        ? "1 cap"
-        : `${player.caps ?? "—"} caps`;
-    return `${capText}${player.captain ? " · Captain" : ""}`;
+        ? `1${hasNonTestRecord ? " Test" : ""} cap`
+        : `${player.caps ?? "—"}${hasNonTestRecord ? " Test" : ""} caps`;
+    const nonTestText = hasNonTestRecord
+      ? `${player.nonTestGames} non-Test ${player.nonTestGames === 1 ? "game" : "games"}`
+      : null;
+    return [capText, nonTestText, player.captain ? "Captain" : null].filter(Boolean).join(" · ");
   }
 
   function currentStarterState(player, previousById, previousMatch) {
