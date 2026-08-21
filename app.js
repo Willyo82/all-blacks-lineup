@@ -97,14 +97,7 @@
 
   function getLatestReleasedMatch() {
     const chronologicalMatches = [...matches].sort((a, b) => new Date(a.kickoff) - new Date(b.kickoff));
-    const nearestUnreleasedMatch = chronologicalMatches.find(match => !Array.isArray(match.lineup) || match.lineup.length !== 23);
-    const releasedBeforeNextFixture = chronologicalMatches.filter(match => {
-      const hasReleasedLineup = Array.isArray(match.lineup) && match.lineup.length === 23;
-      return hasReleasedLineup && (!nearestUnreleasedMatch || new Date(match.kickoff) < new Date(nearestUnreleasedMatch.kickoff));
-    });
-    return releasedBeforeNextFixture.at(-1)
-      || chronologicalMatches.find(match => Array.isArray(match.lineup) && match.lineup.length === 23)
-      || chronologicalMatches[0];
+    return chronologicalMatches.filter(hasReleasedLineup).at(-1) || chronologicalMatches[0];
   }
 
   function injuryFor(match, playerId) {
@@ -448,7 +441,7 @@
       document.getElementById("match-label-2").textContent = match.status === "completed" ? "Match" : "Selected";
       document.getElementById("match-value-2").textContent = `${fixtureDate(match)} · ${match.opponent} · ${match.venue}`;
       document.getElementById("match-label-3").textContent = "Kick-off";
-      document.getElementById("match-value-3").textContent = `${fixtureKickoff(match)} · ${match.status === "completed" ? "Completed" : "Team released"}`;
+      document.getElementById("match-value-3").textContent = `${fixtureKickoff(match)} · ${match.status === "completed" ? "Completed" : "Team released"}${match.broadcast ? ` · ${match.broadcast}` : ""}`;
       availabilityPlayers.textContent = (match.unavailable || []).map(player => `${player.name} — ${player.detail}`).join(" · ");
       document.title = `All Blacks v ${match.opponent} — Matchday 23`;
       document.getElementById("footer-status-copy").textContent = `Portraits are official All Blacks profile images served with this site. Selection movement is calculated from the selected ${previousMatch?.opponent || "first tracked"} lineup to ${match.opponent}.`;
