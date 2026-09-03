@@ -29,6 +29,10 @@
   const unreleasedPanel = document.getElementById("unreleased-panel");
   const availabilityStrip = document.getElementById("availability-strip");
   const availabilityPlayers = document.getElementById("availability-players");
+  const teamUpdate = document.getElementById("team-update");
+  const teamUpdateDate = document.getElementById("team-update-date");
+  const teamUpdateAuthor = document.getElementById("team-update-author");
+  const teamUpdateText = document.getElementById("team-update-text");
   const field = document.getElementById("field");
   const benchContainer = document.getElementById("bench");
   const startingJump = document.getElementById("starting-jump");
@@ -422,6 +426,14 @@
     startingJump.hidden = !hasLineup;
     benchJump.hidden = !hasLineup;
     availabilityStrip.hidden = !hasLineup || !(match.unavailable || []).length;
+    teamUpdate.hidden = !match.updateNotice;
+
+    if (match.updateNotice) {
+      teamUpdateDate.textContent = match.updateNotice.date;
+      teamUpdateDate.dateTime = match.updateNotice.date.split("/").reverse().join("-");
+      teamUpdateAuthor.textContent = match.updateNotice.author;
+      teamUpdateText.textContent = match.updateNotice.text;
+    }
 
     if (hasLineup) {
       renderLineup(match, previousMatch);

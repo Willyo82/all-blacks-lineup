@@ -271,7 +271,51 @@ window.ALL_BLACKS_MATCHES = [
       { n: 23, id: "leroy-carter", name: "Leroy Carter", caps: 7 }
     ]
   },
-  { id: "2026-08-29-RSA", status: "upcoming", competition: "2026 Rugby's Greatest Rivalry Tour", kickoff: "2026-08-29T15:00:00Z", team1: "South Africa", team2: "All Blacks", opponent: "South Africa", venue: "DHL Stadium, Cape Town" },
+  {
+    id: "2026-08-29-RSA",
+    status: "released",
+    competition: "2026 Rugby's Greatest Rivalry Tour",
+    kickoff: "2026-08-29T15:10:00Z",
+    team1: "South Africa",
+    team2: "All Blacks",
+    opponent: "South Africa",
+    venue: "DHL Stadium, Cape Town",
+    broadcast: "LIVE on Sky Sport. Highlights available on allblacks.com and the All Blacks and Black Ferns app.",
+    sourceUrl: "https://www.allblacks.com/matches/south-africa-new-zealand-29-08-2026",
+    unavailable: [
+      { id: "anton-segner", name: "Anton Segner", detail: "Ruled out of the remainder of Rugby’s Greatest Rivalry tour through injury" }
+    ],
+    updateNotice: {
+      date: "25/08/2026",
+      author: "Alan Brown",
+      text: "All Blacks loose forward Anton Segner will return to New Zealand after being ruled out of the remainder of Rugby’s Greatest Rivalry tour through injury."
+    },
+    lineup: [
+      { n: 1, id: "george-bower", name: "George Bower", caps: 27 },
+      { n: 2, id: "codie-taylor", name: "Codie Taylor", caps: 110 },
+      { n: 3, id: "tyrel-lomax", name: "Tyrel Lomax", caps: 52 },
+      { n: 4, id: "fabian-holland", name: "Fabian Holland", caps: 13 },
+      { n: 5, id: "tupou-vaai", name: "Tupou Vaa’i", caps: 48 },
+      { n: 6, id: "simon-parker", name: "Simon Parker", caps: 9 },
+      { n: 7, id: "luke-jacobson", name: "Luke Jacobson", caps: 28 },
+      { n: 8, id: "ardie-savea", name: "Ardie Savea", caps: 110, captain: true },
+      { n: 9, id: "cameron-roigard", name: "Cam Roigard", caps: 21 },
+      { n: 10, id: "ruben-love", name: "Ruben Love", caps: 9 },
+      { n: 11, id: "leroy-carter", name: "Leroy Carter", caps: 8 },
+      { n: 12, id: "jordie-barrett", name: "Jordie Barrett", caps: 82 },
+      { n: 13, id: "quinn-tupaea", name: "Quinn Tupaea", caps: 27 },
+      { n: 14, id: "will-jordan", name: "Will Jordan", caps: 58 },
+      { n: 15, id: "damian-mckenzie", name: "Damian McKenzie", caps: 78 },
+      { n: 16, id: "asafo-aumua", name: "Asafo Aumua", caps: 23 },
+      { n: 17, id: "xavier-numia", name: "Xavier Numia", caps: 2 },
+      { n: 18, id: "fletcher-newell", name: "Fletcher Newell", caps: 38 },
+      { n: 19, id: "patrick-tuipulotu", name: "Patrick Tuipulotu", caps: 57 },
+      { n: 20, id: "peter-lakai", name: "Peter Lakai", caps: 11 },
+      { n: 21, id: "kyle-preston", name: "Kyle Preston", caps: 2 },
+      { n: 22, id: "anton-lienert-brown", name: "Anton Lienert-Brown", caps: 91 },
+      { n: 23, id: "josh-moorby", name: "Josh Moorby", caps: 3 }
+    ]
+  },
   { id: "2026-09-05-RSA", status: "upcoming", competition: "2026 Rugby's Greatest Rivalry Tour", kickoff: "2026-09-05T15:00:00Z", team1: "South Africa", team2: "All Blacks", opponent: "South Africa", venue: "FNB Stadium, Johannesburg" },
   { id: "2026-09-12-RSA", status: "upcoming", competition: "2026 Rugby's Greatest Rivalry Tour", kickoff: "2026-09-12T15:05:00Z", team1: "South Africa", team2: "All Blacks", opponent: "South Africa", venue: "M&T Bank Stadium, Baltimore" },
   { id: "2026-10-10-AUS", status: "upcoming", competition: "2026 Bledisloe Cup", kickoff: "2026-10-10T06:10:00Z", team1: "All Blacks", team2: "Australia", opponent: "Australia", venue: "Eden Park, Auckland" },
