@@ -30,6 +30,7 @@
     const movementLabel = movement === "new" ? "New for this squad" : movement === "retained" ? "Retained" : "Current squad";
     const playerNumber = player.number ? `#${player.number}` : "Uncapped";
     const capSummary = Number.isInteger(player.caps) ? ` · ${player.caps} ${player.caps === 1 ? "cap" : "caps"}` : "";
+    const playerDetails = [Number.isInteger(player.age) ? `Age ${player.age}` : null, player.club, player.province].filter(Boolean).join(" · ");
     const isUncapped = player.caps === 0;
     return `<article class="player-card ${movement}${isUncapped ? " uncapped" : ""}" data-unit="${player.unit}" data-movement="${movement}" data-cap-status="${isUncapped ? "uncapped" : "capped"}" role="button" tabindex="0" aria-label="Select ${player.name}">
       <div class="portrait-wrap">
@@ -42,6 +43,7 @@
         <span class="movement-label">${movementLabel}</span>
         <h3>${player.name}</h3>
         <p>${player.role}</p>
+        ${playerDetails ? `<small class="player-details">${playerDetails}</small>` : ""}
         <strong>${playerNumber}${capSummary}</strong>
       </div>
     </article>`;
@@ -132,11 +134,14 @@
     const uncappedCount = squad.players.filter(player => player.caps === 0).length;
 
     document.getElementById("page-title").textContent = squad.label;
-    document.getElementById("page-subtitle").textContent = previousSquad
-      ? `Touring squad compared automatically with the ${previousSquad.label.toLowerCase()}.`
-      : "The current All Blacks squad arranged by playing unit, ready to compare with the South Africa touring squad.";
+    document.getElementById("page-subtitle").textContent = squad.subtitle || (previousSquad
+      ? `Squad compared automatically with the ${previousSquad.label.toLowerCase()}.`
+      : "The current All Blacks squad arranged by playing unit, ready to compare with the South Africa touring squad.");
     document.getElementById("squad-total").textContent = squad.players.length;
     document.getElementById("squad-status").textContent = previousSquad ? `${additions.length} ${additions.length === 1 ? "addition" : "additions"} · ${uncappedCount} uncapped · ${removed.length} out` : "Comparison baseline";
+    const sourceLink = document.getElementById("squad-source-link");
+    sourceLink.href = squad.sourceUrl || "https://www.allblacks.com/team/all-blacks/squad";
+    sourceLink.textContent = squad.sourceUrl ? `Official ${squad.label} announcement` : "Official All Blacks squad";
 
     unitFilters.innerHTML = units.map(unit => {
       const count = squad.players.filter(player => player.unit === unit.id).length;
