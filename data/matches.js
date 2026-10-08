@@ -396,7 +396,46 @@ window.ALL_BLACKS_MATCHES = [
       { n: 23, id: "beauden-barrett", name: "Beauden Barrett", caps: 144 }
     ]
   },
-  { id: "2026-10-10-AUS", status: "upcoming", competition: "2026 Bledisloe Cup", kickoff: "2026-10-10T06:10:00Z", team1: "All Blacks", team2: "Australia", opponent: "Australia", venue: "Eden Park, Auckland" },
+  {
+    id: "2026-10-10-AUS",
+    status: "released",
+    competition: "2026 Bledisloe Cup",
+    kickoff: "2026-10-10T06:10:00Z",
+    team1: "All Blacks",
+    team2: "Australia",
+    opponent: "Australia",
+    venue: "Eden Park, Auckland",
+    sourceUrl: "https://www.allblacks.com/news/all-blacks/all-blacks-team-named-for-first-bledisloe-cup-test",
+    unavailable: [
+      { id: "richie-mo-unga", name: "Richie Mo’unga", detail: "Calf" },
+      { id: "fehi-fineanganofo", name: "Fehi Fineanganofo", detail: "Concussion/hamstring" }
+    ],
+    lineup: [
+      { n: 1, id: "ethan-de-groot", name: "Ethan de Groot", caps: 45 },
+      { n: 2, id: "codie-taylor", name: "Codie Taylor", caps: 112, captain: true },
+      { n: 3, id: "fletcher-newell", name: "Fletcher Newell", caps: 41 },
+      { n: 4, id: "scott-barrett", name: "Scott Barrett", caps: 89 },
+      { n: 5, id: "josh-lord", name: "Josh Lord", caps: 17 },
+      { n: 6, id: "tupou-vaai", name: "Tupou Vaa’i", caps: 51 },
+      { n: 7, id: "peter-lakai", name: "Peter Lakai", caps: 14 },
+      { n: 8, id: "wallace-sititi", name: "Wallace Sititi", caps: 23 },
+      { n: 9, id: "cameron-roigard", name: "Cam Roigard", caps: 24 },
+      { n: 10, id: "damian-mckenzie", name: "Damian McKenzie", caps: 81 },
+      { n: 11, id: "leroy-carter", name: "Leroy Carter", caps: 10 },
+      { n: 12, id: "jordie-barrett", name: "Jordie Barrett", caps: 85 },
+      { n: 13, id: "quinn-tupaea", name: "Quinn Tupaea", caps: 29 },
+      { n: 14, id: "will-jordan", name: "Will Jordan", caps: 61 },
+      { n: 15, id: "beauden-barrett", name: "Beauden Barrett", caps: 145 },
+      { n: 16, id: "asafo-aumua", name: "Asafo Aumua", caps: 26 },
+      { n: 17, id: "george-bower", name: "George Bower", caps: 29 },
+      { n: 18, id: "pasilio-tosi", name: "Pasilio Tosi", caps: 17 },
+      { n: 19, id: "shannon-frizell", name: "Shannon Frizell", caps: 33 },
+      { n: 20, id: "anton-segner", name: "Anton Segner", caps: 2 },
+      { n: 21, id: "kyle-preston", name: "Kyle Preston", caps: 5 },
+      { n: 22, id: "rieko-ioane", name: "Rieko Ioane", caps: 89 },
+      { n: 23, id: "josh-moorby", name: "Josh Moorby", caps: 5 }
+    ]
+  },
   { id: "2026-10-17-AUS", status: "upcoming", competition: "2026 Bledisloe Cup", kickoff: "2026-10-17T05:00:00Z", team1: "Australia", team2: "All Blacks", opponent: "Australia", venue: "Accor Stadium, Sydney" },
   { id: "2026-11-07-SCO", status: "upcoming", competition: "2026 Nations Championship - Away", kickoff: "2026-11-07T14:10:00Z", team1: "Scotland", team2: "All Blacks", opponent: "Scotland", venue: "Scottish Gas Murrayfield, Edinburgh" },
   { id: "2026-11-14-WAL", status: "upcoming", competition: "2026 Nations Championship - Away", kickoff: "2026-11-14T14:10:00Z", team1: "Wales", team2: "All Blacks", opponent: "Wales", venue: "Principality Stadium, Cardiff" },
