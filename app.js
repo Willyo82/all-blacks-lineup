@@ -362,7 +362,7 @@
           <div class="previous"><span class="previous-label">${previousMatch ? previousMatch.opponent : "Previous"}</span>${previousStatus(player)}</div>
           ${jersey(player.n)}
           <div class="current-player">
-            <div class="face-frame"><img class="face" src="${photoRoot}${player.id}.png" alt="${player.name}" /></div>
+            <div class="face-frame"><img class="face" src="${photoRoot}${player.id}.png" alt="${player.name}" onerror="this.style.display='none'" /></div>
             <div class="current-copy"><strong>${player.name}</strong><span class="status">${player.status}</span><small class="selection-meta">${playerMeta(player)}</small></div>
           </div>
         </div>
@@ -375,7 +375,7 @@
         <div class="bench-previous">${previousStatus(player)}</div>
         <div class="bench-arrow">→</div>
         <div class="bench-current">
-          <div class="face-frame"><img class="face" src="${photoRoot}${player.id}.png" alt="${player.name}" /></div>
+          <div class="face-frame"><img class="face" src="${photoRoot}${player.id}.png" alt="${player.name}" onerror="this.style.display='none'" /></div>
           <div><strong>${player.name}</strong><span>${player.status}</span><small class="selection-meta">${playerMeta(player)}</small></div>
         </div>
       </div>`;
