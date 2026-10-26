@@ -52,7 +52,7 @@
   function removedCard(player, unavailableById) {
     const unavailable = unavailableById.get(player.id);
     const status = unavailable
-      ? `<div class="removed-status"><b aria-label="Unavailable due to injury: ${unavailable.detail || "Injury"}">✚ ${unavailable.detail || "Injury"}</b>${unavailable.updated ? `<small>Updated ${unavailable.updated}</small>` : ""}</div>`
+      ? `<div class="removed-status"><b aria-label="Unavailable: ${unavailable.detail || "Injury"}">${unavailable.reason === "personal" ? "" : "✚ "}${unavailable.detail || "Injury"}</b>${unavailable.updated ? `<small>Updated ${unavailable.updated}</small>` : ""}</div>`
       : '<div class="removed-status"><b>Not selected</b></div>';
     return `<div class="removed-player${unavailable ? " injured" : ""}">
       <img src="${photoRoot}${player.id}.png" alt="${player.name}" />
@@ -113,12 +113,12 @@
     }
 
     const unavailableById = new Map((squad.unavailable || []).map(player => [player.id, player]));
-    const injuryCount = removed.filter(player => unavailableById.has(player.id)).length;
-    const selectionRemovalCount = removed.length - injuryCount;
+    const unavailableCount = removed.filter(player => unavailableById.has(player.id)).length;
+    const selectionRemovalCount = removed.length - unavailableCount;
     const selectionRemovalCopy = selectionRemovalCount === 1 ? "1 player was not selected" : `${selectionRemovalCount} players were not selected`;
-    changePanel.innerHTML = `<div><span class="eyebrow">Changes from ${previousSquad.shortLabel}</span><h2>${additions.length} added · ${removed.length} out</h2><p>${retainedCount} players remain from the previous squad. ${injuryCount} ${injuryCount === 1 ? "player is" : "players are"} unavailable through injury and ${selectionRemovalCopy}.</p></div>
+    changePanel.innerHTML = `<div><span class="eyebrow">Changes from ${previousSquad.shortLabel}</span><h2>${additions.length} added · ${removed.length} out</h2><p>${retainedCount} players remain from the previous squad. ${unavailableCount} ${unavailableCount === 1 ? "player is" : "players are"} unavailable and ${selectionRemovalCopy}.</p></div>
       <div class="change-stats"><span><b>${squad.players.length}</b> selected</span><span class="added"><b>${additions.length}</b> added</span><span class="uncapped"><b>${uncappedCount}</b> new caps</span><span class="removed"><b>${removed.length}</b> out</span></div>
-      ${removed.length ? `<div class="removed-list"><h3>Unavailable or not selected from the previous squad</h3>${removed.map(player => removedCard(player, unavailableById)).join("")}</div>` : ""}`;
+      ${removed.length ? `<div class="removed-list"><h3>Unavailable or not selected</h3>${removed.map(player => removedCard(player, unavailableById)).join("")}</div>` : ""}`;
   }
 
   function renderReleasedSquad(squad) {
@@ -199,3 +199,4 @@
   const latestReleasedSquad = [...squads].reverse().find(squad => squad.status === "released" && Array.isArray(squad.players));
   applySquad(squads.find(squad => squad.id === requestedSquad) || latestReleasedSquad || squads[0]);
 })();
+

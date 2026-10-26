@@ -182,5 +182,508 @@ window.ALL_BLACKS_SQUADS = [
       { id: "beauden-barrett", name: "Beauden Barrett", number: 1115, unit: "outside-backs", role: "Fullback / first five-eighth", age: 35, club: "Blues", province: "Taranaki", caps: 145 },
       { id: "damian-mckenzie", name: "Damian McKenzie", number: 1154, unit: "outside-backs", role: "Fullback / first five-eighth", age: 31, club: "Chiefs", province: "Waikato", caps: 81 }
     ]
+  },
+  {
+    "id": "2026-northern-tour",
+    "label": "2026 Nations Championship Northern Tour squad",
+    "shortLabel": "Northern Tour squad",
+    "status": "released",
+    "announced": "27 October 2026",
+    "compareTo": "2026-bledisloe",
+    "subtitle": "The 36-player Northern Tour squad for the Nations Championship, captained by Codie Taylor.",
+    "sourceUrl": "https://www.allblacks.com/news/all-blacks/all-blacks-name-squad-for-nations-championship-northern-tour",
+    "unavailable": [
+      {
+        "id": "samisoni-taukeiaho",
+        "detail": "Calf",
+        "reason": "injury"
+      },
+      {
+        "id": "shannon-frizell",
+        "detail": "Knee",
+        "reason": "injury"
+      },
+      {
+        "id": "tyrel-lomax",
+        "detail": "Neck",
+        "reason": "injury"
+      },
+      {
+        "id": "leroy-carter",
+        "detail": "Ankle",
+        "reason": "injury"
+      },
+      {
+        "id": "ruben-love",
+        "detail": "Ankle",
+        "reason": "injury"
+      },
+      {
+        "id": "ardie-savea",
+        "detail": "Shoulder",
+        "reason": "injury"
+      },
+      {
+        "id": "luke-jacobson",
+        "detail": "Elbow",
+        "reason": "injury"
+      },
+      {
+        "id": "caleb-clarke",
+        "detail": "Shoulder",
+        "reason": "injury"
+      },
+      {
+        "id": "ollie-norris",
+        "detail": "Knee",
+        "reason": "injury"
+      },
+      {
+        "id": "simon-parker",
+        "detail": "Personal reasons",
+        "reason": "personal"
+      }
+    ],
+    "departures": [
+      {
+        "id": "ruben-love",
+        "name": "Ruben Love",
+        "number": 1223,
+        "unit": "inside-backs",
+        "role": "First five-eighth",
+        "caps": 8
+      },
+      {
+        "id": "ardie-savea",
+        "name": "Ardie Savea",
+        "number": 1147,
+        "unit": "loose-forwards",
+        "role": "No. 8 / flanker",
+        "caps": 109,
+        "captain": true
+      },
+      {
+        "id": "luke-jacobson",
+        "name": "Luke Jacobson",
+        "number": 1183,
+        "unit": "loose-forwards",
+        "role": "Loose forward",
+        "caps": 27
+      },
+      {
+        "id": "caleb-clarke",
+        "name": "Caleb Clarke",
+        "number": 1187,
+        "unit": "outside-backs",
+        "role": "Wing",
+        "caps": 35
+      },
+      {
+        "id": "ollie-norris",
+        "name": "Ollie Norris",
+        "number": 1227,
+        "unit": "front-row",
+        "role": "Prop",
+        "caps": 3
+      }
+    ],
+    "players": [
+      {
+        "id": "codie-taylor",
+        "name": "Codie Taylor",
+        "number": 1143,
+        "unit": "front-row",
+        "role": "Hooker",
+        "age": 35,
+        "club": "Crusaders",
+        "province": "Canterbury",
+        "caps": 114,
+        "captain": true
+      },
+      {
+        "id": "asafo-aumua",
+        "name": "Asafo Aumua",
+        "number": 1163,
+        "unit": "front-row",
+        "role": "Hooker",
+        "age": 29,
+        "club": "Hurricanes",
+        "province": "Wellington",
+        "caps": 27
+      },
+      {
+        "id": "george-bell",
+        "name": "George Bell",
+        "number": 1217,
+        "unit": "front-row",
+        "role": "Hooker",
+        "caps": 4,
+        "age": 24,
+        "club": "Crusaders",
+        "province": "Canterbury"
+      },
+      {
+        "id": "ethan-de-groot",
+        "name": "Ethan de Groot",
+        "number": 1197,
+        "unit": "front-row",
+        "role": "Loosehead prop",
+        "age": 28,
+        "club": "Highlanders",
+        "province": "Southland",
+        "caps": 46
+      },
+      {
+        "id": "george-bower",
+        "name": "George Bower",
+        "number": 1194,
+        "unit": "front-row",
+        "role": "Loosehead prop",
+        "age": 34,
+        "club": "Crusaders",
+        "province": "Otago",
+        "caps": 31
+      },
+      {
+        "id": "xavier-numia",
+        "name": "Xavier Numia",
+        "number": 1233,
+        "unit": "front-row",
+        "role": "Loosehead prop",
+        "age": 27,
+        "club": "Hurricanes",
+        "province": "Wellington",
+        "caps": 6
+      },
+      {
+        "id": "fletcher-newell",
+        "name": "Fletcher Newell",
+        "number": 1205,
+        "unit": "front-row",
+        "role": "Tighthead prop",
+        "age": 26,
+        "club": "Crusaders",
+        "province": "Canterbury",
+        "caps": 43
+      },
+      {
+        "id": "pasilio-tosi",
+        "name": "Pasilio Tosi",
+        "number": 1219,
+        "unit": "front-row",
+        "role": "Prop",
+        "age": 28,
+        "club": "Hurricanes",
+        "province": "Bay of Plenty",
+        "caps": 19
+      },
+      {
+        "id": "saula-mau",
+        "name": "Saula Ma’u",
+        "number": null,
+        "unit": "front-row",
+        "role": "Prop",
+        "age": 26,
+        "club": "Highlanders",
+        "province": "Otago",
+        "caps": 0,
+        "debut": true
+      },
+      {
+        "id": "scott-barrett",
+        "name": "Scott Barrett",
+        "number": 1155,
+        "unit": "locks",
+        "role": "Lock",
+        "age": 32,
+        "club": "Crusaders",
+        "province": "Taranaki",
+        "caps": 91
+      },
+      {
+        "id": "josh-lord",
+        "name": "Josh Lord",
+        "number": 1199,
+        "unit": "locks",
+        "role": "Lock",
+        "age": 25,
+        "club": "Chiefs",
+        "province": "Taranaki",
+        "caps": 18
+      },
+      {
+        "id": "fabian-holland",
+        "name": "Fabian Holland",
+        "number": 1224,
+        "unit": "locks",
+        "role": "Lock",
+        "age": 24,
+        "club": "Highlanders",
+        "province": "Otago",
+        "caps": 16
+      },
+      {
+        "id": "jamie-hannah",
+        "name": "Jamie Hannah",
+        "number": 1235,
+        "unit": "locks",
+        "role": "Lock",
+        "caps": 1,
+        "age": 23,
+        "club": "Crusaders",
+        "province": "Canterbury"
+      },
+      {
+        "id": "tupou-vaai",
+        "name": "Tupou Vaa’i",
+        "number": 1188,
+        "unit": "locks",
+        "role": "Lock",
+        "age": 26,
+        "club": "Chiefs",
+        "province": "Taranaki",
+        "caps": 53
+      },
+      {
+        "id": "anton-segner",
+        "name": "Anton Segner",
+        "number": 1237,
+        "unit": "loose-forwards",
+        "role": "Flanker",
+        "age": 25,
+        "club": "Blues",
+        "province": "Auckland",
+        "caps": 3
+      },
+      {
+        "id": "leicester-faingaanuku",
+        "name": "Leicester Fainga’anuku",
+        "number": 1200,
+        "unit": "loose-forwards",
+        "role": "Loose forward",
+        "caps": 12,
+        "age": 27,
+        "club": "Crusaders",
+        "province": "Tasman"
+      },
+      {
+        "id": "ethan-blackadder",
+        "name": "Ethan Blackadder",
+        "number": 1195,
+        "unit": "loose-forwards",
+        "role": "Loose forward",
+        "age": 31,
+        "club": "Crusaders",
+        "province": "Tasman",
+        "caps": 15
+      },
+      {
+        "id": "christian-lio-willie",
+        "name": "Christian Lio-Willie",
+        "number": 1225,
+        "unit": "loose-forwards",
+        "role": "Loose forward",
+        "age": 28,
+        "club": "Crusaders",
+        "province": "Otago",
+        "caps": 3
+      },
+      {
+        "id": "peter-lakai",
+        "name": "Peter Lakai",
+        "number": 1222,
+        "unit": "loose-forwards",
+        "role": "Loose forward",
+        "age": 23,
+        "club": "Hurricanes",
+        "province": "Wellington",
+        "caps": 16
+      },
+      {
+        "id": "wallace-sititi",
+        "name": "Wallace Sititi",
+        "number": 1218,
+        "unit": "loose-forwards",
+        "role": "Flanker / No. 8",
+        "age": 24,
+        "club": "Chiefs",
+        "province": "North Harbour",
+        "caps": 25
+      },
+      {
+        "id": "cameron-roigard",
+        "name": "Cam Roigard",
+        "number": 1210,
+        "unit": "inside-backs",
+        "role": "Halfback",
+        "age": 25,
+        "club": "Hurricanes",
+        "province": "Counties Manukau",
+        "caps": 26
+      },
+      {
+        "id": "kyle-preston",
+        "name": "Kyle Preston",
+        "number": 1231,
+        "unit": "inside-backs",
+        "role": "Halfback",
+        "age": 27,
+        "club": "Crusaders",
+        "province": "Wellington",
+        "caps": 6
+      },
+      {
+        "id": "cortez-ratima",
+        "name": "Cortez Ratima",
+        "number": 1214,
+        "unit": "inside-backs",
+        "role": "Halfback",
+        "age": 25,
+        "club": "Chiefs",
+        "province": "Waikato",
+        "caps": 25
+      },
+      {
+        "id": "richie-mo-unga",
+        "name": "Richie Mo’unga",
+        "number": 1167,
+        "unit": "inside-backs",
+        "role": "First five-eighth",
+        "age": 32,
+        "club": "Crusaders",
+        "province": "Canterbury",
+        "caps": 57
+      },
+      {
+        "id": "damian-mckenzie",
+        "name": "Damian McKenzie",
+        "number": 1154,
+        "unit": "inside-backs",
+        "role": "First five-eighth",
+        "age": 31,
+        "club": "Chiefs",
+        "province": "Waikato",
+        "caps": 83
+      },
+      {
+        "id": "josh-jacomb",
+        "name": "Josh Jacomb",
+        "number": null,
+        "unit": "inside-backs",
+        "role": "First five-eighth",
+        "age": 25,
+        "club": "Chiefs",
+        "province": "Taranaki",
+        "caps": 0,
+        "debut": true
+      },
+      {
+        "id": "jordie-barrett",
+        "name": "Jordie Barrett",
+        "number": 1159,
+        "unit": "midfield",
+        "role": "Second five-eighth",
+        "age": 29,
+        "club": "Hurricanes",
+        "province": "Taranaki",
+        "caps": 86
+      },
+      {
+        "id": "quinn-tupaea",
+        "name": "Quinn Tupaea",
+        "number": 1193,
+        "unit": "midfield",
+        "role": "Midfield",
+        "age": 27,
+        "club": "Chiefs",
+        "province": "Waikato",
+        "caps": 31
+      },
+      {
+        "id": "timoci-tavatavanawai",
+        "name": "Timoci Tavatavanawai",
+        "number": 1228,
+        "unit": "midfield",
+        "role": "Midfield",
+        "age": 28,
+        "club": "Highlanders",
+        "province": "Tasman",
+        "caps": 3
+      },
+      {
+        "id": "anton-lienert-brown",
+        "name": "Anton Lienert-Brown",
+        "number": 1153,
+        "unit": "midfield",
+        "role": "Midfield",
+        "caps": 94
+      },
+      {
+        "id": "rieko-ioane",
+        "name": "Rieko Ioane",
+        "number": 1156,
+        "unit": "outside-backs",
+        "role": "Wing / centre",
+        "age": 29,
+        "club": "Blues",
+        "province": "Auckland",
+        "caps": 91
+      },
+      {
+        "id": "chay-fihaki",
+        "name": "Chay Fihaki",
+        "number": 1243,
+        "unit": "outside-backs",
+        "role": "Wing / fullback",
+        "age": 25,
+        "club": "Crusaders",
+        "province": "Canterbury",
+        "caps": 1
+      },
+      {
+        "id": "fehi-fineanganofo",
+        "name": "Fehi Fineanganofo",
+        "number": 1234,
+        "unit": "outside-backs",
+        "role": "Wing",
+        "age": 24,
+        "club": "Hurricanes",
+        "province": "Bay of Plenty",
+        "caps": 1
+      },
+      {
+        "id": "josh-moorby",
+        "name": "Josh Moorby",
+        "number": 1236,
+        "unit": "outside-backs",
+        "role": "Wing / fullback",
+        "age": 28,
+        "club": "Hurricanes",
+        "province": "Waikato",
+        "caps": 7
+      },
+      {
+        "id": "will-jordan",
+        "name": "Will Jordan",
+        "number": 1191,
+        "unit": "outside-backs",
+        "role": "Wing / fullback",
+        "age": 28,
+        "club": "Crusaders",
+        "province": "Tasman",
+        "caps": 63
+      },
+      {
+        "id": "beauden-barrett",
+        "name": "Beauden Barrett",
+        "number": 1115,
+        "unit": "outside-backs",
+        "role": "Fullback / first five-eighth",
+        "age": 35,
+        "club": "Blues",
+        "province": "Taranaki",
+        "caps": 147
+      }
+    ]
   }
 ];
