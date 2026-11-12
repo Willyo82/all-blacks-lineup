@@ -528,7 +528,45 @@ window.ALL_BLACKS_MATCHES = [
       { n: 23, id: "rieko-ioane", name: "Rieko Ioane", caps: 91 }
     ]
   },
-  { id: "2026-11-14-WAL", status: "upcoming", competition: "2026 Nations Championship - Away", kickoff: "2026-11-14T14:10:00Z", team1: "Wales", team2: "All Blacks", opponent: "Wales", venue: "Principality Stadium, Cardiff" },
+  {
+    id: "2026-11-14-WAL",
+    status: "released",
+    competition: "2026 Nations Championship - Away",
+    kickoff: "2026-11-14T14:10:00Z",
+    team1: "Wales",
+    team2: "All Blacks",
+    opponent: "Wales",
+    venue: "Principality Stadium, Cardiff",
+    sourceUrl: "https://www.rugbypass.com/news/new-captain-headlines-dave-rennies-all-blacks-changes-for-wales/",
+    unavailable: [
+      { id: "will-jordan", name: "Will Jordan", detail: "Hamstring" }
+    ],
+    lineup: [
+      { n: 1, id: "george-bower", name: "George Bower", caps: 32 },
+      { n: 2, id: "asafo-aumua", name: "Asafo Aumua", caps: 28 },
+      { n: 3, id: "fletcher-newell", name: "Fletcher Newell", caps: 44 },
+      { n: 4, id: "scott-barrett", name: "Scott Barrett", caps: 92 },
+      { n: 5, id: "josh-lord", name: "Josh Lord", caps: 18 },
+      { n: 6, id: "anton-segner", name: "Anton Segner", caps: 4 },
+      { n: 7, id: "peter-lakai", name: "Peter Lakai", caps: 17 },
+      { n: 8, id: "wallace-sititi", name: "Wallace Sititi", caps: 26 },
+      { n: 9, id: "cortez-ratima", name: "Cortez Ratima", caps: 26 },
+      { n: 10, id: "richie-mo-unga", name: "Richie Mo’unga", caps: 57 },
+      { n: 11, id: "josh-moorby", name: "Josh Moorby", caps: 8 },
+      { n: 12, id: "anton-lienert-brown", name: "Anton Lienert-Brown", caps: 94 },
+      { n: 13, id: "quinn-tupaea", name: "Quinn Tupaea", caps: 32 },
+      { n: 14, id: "fehi-fineanganofo", name: "Fehi Fineanganofo", caps: 1 },
+      { n: 15, id: "beauden-barrett", name: "Beauden Barrett", caps: 148, captain: true },
+      { n: 16, id: "george-bell", name: "George Bell", caps: 4 },
+      { n: 17, id: "xavier-numia", name: "Xavier Numia", caps: 6 },
+      { n: 18, id: "pasilio-tosi", name: "Pasilio Tosi", caps: 20 },
+      { n: 19, id: "jamie-hannah", name: "Jamie Hannah", caps: 1 },
+      { n: 20, id: "ethan-blackadder", name: "Ethan Blackadder", caps: 15 },
+      { n: 21, id: "leicester-faingaanuku", name: "Leicester Fainga’anuku", caps: 12 },
+      { n: 22, id: "kyle-preston", name: "Kyle Preston", caps: 6 },
+      { n: 23, id: "rieko-ioane", name: "Rieko Ioane", caps: 92 }
+    ]
+  },
   { id: "2026-11-21-ENG", status: "upcoming", competition: "2026 Nations Championship - Away", kickoff: "2026-11-21T14:10:00Z", team1: "England", team2: "All Blacks", opponent: "England", venue: "Allianz Stadium, London" },
   { id: "2027-04-25-AUS", status: "upcoming", competition: "2027 ANZAC Day Bledisloe Cup", kickoff: "2027-04-25T00:00:00Z", team1: "Australia", team2: "All Blacks", opponent: "Australia", venue: "Suncorp Stadium, Brisbane" },
   { id: "2027-10-02-CHI", status: "upcoming", competition: "2027 Men's Rugby World Cup", kickoff: "2027-10-02T05:15:00Z", team1: "All Blacks", team2: "Chile", opponent: "Chile", venue: "Optus Stadium, Perth" },
