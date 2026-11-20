@@ -194,6 +194,18 @@ window.ALL_BLACKS_SQUADS = [
     "sourceUrl": "https://www.allblacks.com/news/all-blacks/all-blacks-name-squad-for-nations-championship-northern-tour",
     "unavailable": [
       {
+        "id": "jamie-hannah",
+        "detail": "Fractured shoulder blade",
+        "reason": "injury",
+        "updated": "16 November 2026"
+      },
+      {
+        "id": "quinn-tupaea",
+        "detail": "Fractured thumb",
+        "reason": "injury",
+        "updated": "16 November 2026"
+      },
+      {
         "id": "samisoni-taukeiaho",
         "detail": "Calf",
         "reason": "injury"
@@ -245,6 +257,22 @@ window.ALL_BLACKS_SQUADS = [
       }
     ],
     "departures": [
+      {
+        "id": "jamie-hannah",
+        "name": "Jamie Hannah",
+        "number": 1235,
+        "unit": "locks",
+        "role": "Lock",
+        "caps": 2
+      },
+      {
+        "id": "quinn-tupaea",
+        "name": "Quinn Tupaea",
+        "number": 1193,
+        "unit": "midfield",
+        "role": "Midfield",
+        "caps": 33
+      },
       {
         "id": "ruben-love",
         "name": "Ruben Love",
@@ -423,15 +451,12 @@ window.ALL_BLACKS_SQUADS = [
         "caps": 16
       },
       {
-        "id": "jamie-hannah",
-        "name": "Jamie Hannah",
-        "number": 1235,
+        "id": "sam-darry",
+        "name": "Sam Darry",
+        "number": 1220,
         "unit": "locks",
         "role": "Lock",
-        "caps": 1,
-        "age": 23,
-        "club": "Crusaders",
-        "province": "Canterbury"
+        "caps": 12
       },
       {
         "id": "tupou-vaai",
@@ -589,15 +614,12 @@ window.ALL_BLACKS_SQUADS = [
         "caps": 86
       },
       {
-        "id": "quinn-tupaea",
-        "name": "Quinn Tupaea",
-        "number": 1193,
+        "id": "billy-proctor",
+        "name": "Billy Proctor",
+        "number": 1215,
         "unit": "midfield",
-        "role": "Midfield",
-        "age": 27,
-        "club": "Chiefs",
-        "province": "Waikato",
-        "caps": 31
+        "role": "Centre",
+        "caps": 13
       },
       {
         "id": "timoci-tavatavanawai",

@@ -567,7 +567,46 @@ window.ALL_BLACKS_MATCHES = [
       { n: 23, id: "rieko-ioane", name: "Rieko Ioane", caps: 92 }
     ]
   },
-  { id: "2026-11-21-ENG", status: "upcoming", competition: "2026 Nations Championship - Away", kickoff: "2026-11-21T14:10:00Z", team1: "England", team2: "All Blacks", opponent: "England", venue: "Allianz Stadium, London" },
+  {
+    id: "2026-11-21-ENG",
+    status: "released",
+    competition: "2026 Nations Championship - Away",
+    kickoff: "2026-11-21T14:10:00Z",
+    team1: "England",
+    team2: "All Blacks",
+    opponent: "England",
+    venue: "Allianz Stadium, London",
+    sourceUrl: "https://www.allblacks.com/news/all-blacks/beauden-barrett-to-play-150th-test-as-all-blacks-name-team-for-england",
+    unavailable: [
+      { id: "jamie-hannah", name: "Jamie Hannah", detail: "Fractured shoulder blade" },
+      { id: "quinn-tupaea", name: "Quinn Tupaea", detail: "Fractured thumb" }
+    ],
+    lineup: [
+      { n: 1, id: "ethan-de-groot", name: "Ethan de Groot", caps: 47 },
+      { n: 2, id: "codie-taylor", name: "Codie Taylor", caps: 115, captain: true },
+      { n: 3, id: "fletcher-newell", name: "Fletcher Newell", caps: 45 },
+      { n: 4, id: "scott-barrett", name: "Scott Barrett", caps: 93 },
+      { n: 5, id: "fabian-holland", name: "Fabian Holland", caps: 17 },
+      { n: 6, id: "tupou-vaai", name: "Tupou Vaa’i", caps: 54 },
+      { n: 7, id: "peter-lakai", name: "Peter Lakai", caps: 18 },
+      { n: 8, id: "wallace-sititi", name: "Wallace Sititi", caps: 27 },
+      { n: 9, id: "cameron-roigard", name: "Cam Roigard", caps: 27 },
+      { n: 10, id: "damian-mckenzie", name: "Damian McKenzie", caps: 84 },
+      { n: 11, id: "josh-moorby", name: "Josh Moorby", caps: 9 },
+      { n: 12, id: "jordie-barrett", name: "Jordie Barrett", caps: 87 },
+      { n: 13, id: "anton-lienert-brown", name: "Anton Lienert-Brown", caps: 95 },
+      { n: 14, id: "will-jordan", name: "Will Jordan", caps: 64 },
+      { n: 15, id: "beauden-barrett", name: "Beauden Barrett", caps: 149 },
+      { n: 16, id: "asafo-aumua", name: "Asafo Aumua", caps: 29 },
+      { n: 17, id: "george-bower", name: "George Bower", caps: 33 },
+      { n: 18, id: "pasilio-tosi", name: "Pasilio Tosi", caps: 21 },
+      { n: 19, id: "anton-segner", name: "Anton Segner", caps: 5 },
+      { n: 20, id: "leicester-faingaanuku", name: "Leicester Fainga’anuku", caps: 13 },
+      { n: 21, id: "cortez-ratima", name: "Cortez Ratima", caps: 27 },
+      { n: 22, id: "richie-mo-unga", name: "Richie Mo’unga", caps: 58 },
+      { n: 23, id: "rieko-ioane", name: "Rieko Ioane", caps: 93 }
+    ]
+  },
   { id: "2027-04-25-AUS", status: "upcoming", competition: "2027 ANZAC Day Bledisloe Cup", kickoff: "2027-04-25T00:00:00Z", team1: "Australia", team2: "All Blacks", opponent: "Australia", venue: "Suncorp Stadium, Brisbane" },
   { id: "2027-10-02-CHI", status: "upcoming", competition: "2027 Men's Rugby World Cup", kickoff: "2027-10-02T05:15:00Z", team1: "All Blacks", team2: "Chile", opponent: "Chile", venue: "Optus Stadium, Perth" },
   { id: "2027-10-09-AUS", status: "upcoming", competition: "2027 Men's Rugby World Cup", kickoff: "2027-10-09T06:10:00Z", team1: "All Blacks", team2: "Australia", opponent: "Australia", venue: "Accor Stadium, Sydney" },
